@@ -92,19 +92,4 @@ public class Meal {
     public String getSource() {
         return source;
     }
-
-    public void setIdMeal(String id) {
-    }
-
-    public void setStrMeal(String name) {
-    }
-
-    public void setStrMealThumb(String thumb) {
-    }
-
-    public void setStrYoutube(String youtube) {
-    }
-
-    public void setStrInstructions(String instructions) {
-    }
 }
