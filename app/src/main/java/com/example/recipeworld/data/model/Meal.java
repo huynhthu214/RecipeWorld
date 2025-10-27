@@ -107,4 +107,8 @@ public class Meal {
 
     public void setStrInstructions(String instructions) {
     }
+
+    public String getStrMeal() {
+        return "";
+    }
 }

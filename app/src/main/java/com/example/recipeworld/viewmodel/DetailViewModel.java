@@ -1,4 +1,4 @@
-package com.example.recipeworld.view.viewmodel;
+package com.example.recipeworld.viewmodel;
 
 import android.app.Application;
 
