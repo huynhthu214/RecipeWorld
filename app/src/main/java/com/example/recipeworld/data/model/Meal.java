@@ -45,51 +45,28 @@ public class Meal {
     @SerializedName("strSource")
     private String source;
 
-    // Constructor, Getter, Setter
+    // Constructor
     public Meal() {
     }
 
-    public String getIdMeal() {
-        return idMeal;
+    public Meal(String name, String thumbnail) {
+        this.name = name;
+        this.thumbnail = thumbnail;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public String getInstructions() {
-        return instructions;
-    }
-
-    public String getThumbnail() {
+    // Getters
+    public String getIdMeal() { return idMeal; }
+    public String getName() { return name; }
+    public String getCategory() { return category; }
+    public String getArea() { return area; }
+    public String getInstructions() { return instructions; }
+    public String getThumbnail() { return thumbnail; }
+    public String getTags() { return tags; }
+    public String getYoutubeLink() { return youtubeLink; }
+    public String getIngredient1() { return ingredient1; }
+    public String getMeasure1() { return measure1; }
+    public String getSource() { return source; }
+    public String getImageUrl() {
         return thumbnail;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public String getYoutubeLink() {
-        return youtubeLink;
-    }
-
-    public String getIngredient1() {
-        return ingredient1;
-    }
-
-    public String getMeasure1() {
-        return measure1;
-    }
-
-    public String getSource() {
-        return source;
     }
 }
