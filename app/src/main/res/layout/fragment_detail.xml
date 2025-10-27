@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout android:orientation="vertical" android:padding="12dp"
+        android:layout_width="match_parent" android:layout_height="wrap_content">
+
+        <ImageView android:id="@+id/imgDetail" android:layout_width="match_parent" android:layout_height="200dp" android:scaleType="centerCrop"/>
+        <TextView android:id="@+id/tvDetailName" android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="8dp" android:layout_height="match_parent" android:layout_width="match_parent"/>
+        <TextView android:id="@+id/tvInstructions" android:layout_marginTop="8dp" android:layout_height="match_parent" android:layout_width="match_parent"/>
+        <Button android:id="@+id/btnWatch" android:text="Watch video" android:layout_marginTop="12dp" android:layout_height="match_parent" android:layout_width="match_parent"/>
+        <Button android:id="@+id/btnFavorite" android:text="Save Favorite" android:layout_marginTop="8dp" android:layout_height="match_parent" android:layout_width="match_parent"/>
+    </LinearLayout>
+</ScrollView>

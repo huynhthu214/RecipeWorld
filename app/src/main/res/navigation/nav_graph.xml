@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.recipeworld.ui.main.MainFragment"
+        android:label="Home" >
+        <action android:id="@+id/action_mainFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.example.recipeworld.ui.detail.DetailFragment"
+        android:label="Detail" />
+
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.example.recipeworld.ui.favorites.FavoriteFragment"
+        android:label="Favorites" />
+</navigation>
