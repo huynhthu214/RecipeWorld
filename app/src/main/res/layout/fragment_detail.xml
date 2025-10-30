@@ -1,13 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-    <LinearLayout android:orientation="vertical" android:padding="12dp"
-        android:layout_width="match_parent" android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
-        <ImageView android:id="@+id/imgDetail" android:layout_width="match_parent" android:layout_height="200dp" android:scaleType="centerCrop"/>
-        <TextView android:id="@+id/tvDetailName" android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="8dp" android:layout_height="match_parent" android:layout_width="match_parent"/>
-        <TextView android:id="@+id/tvInstructions" android:layout_marginTop="8dp" android:layout_height="match_parent" android:layout_width="match_parent"/>
-        <Button android:id="@+id/btnWatch" android:text="Watch video" android:layout_marginTop="12dp" android:layout_height="match_parent" android:layout_width="match_parent"/>
-        <Button android:id="@+id/btnFavorite" android:text="Save Favorite" android:layout_marginTop="8dp" android:layout_height="match_parent" android:layout_width="match_parent"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imgMealDetail"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/meal_image" />
+
+        <TextView
+            android:id="@+id/tvMealName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:paddingTop="8dp"
+            android:text="Tên món ăn" />
+
+        <TextView
+            android:id="@+id/tvInstructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="Hướng dẫn nấu ăn sẽ hiển thị ở đây." />
+
+        <TextView
+            android:id="@+id/tvYoutubeLink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_blue_dark"
+            android:paddingTop="8dp"
+            android:text="Xem video hướng dẫn" />
+
     </LinearLayout>
 </ScrollView>
