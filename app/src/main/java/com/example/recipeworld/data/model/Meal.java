@@ -27,6 +27,10 @@ public class Meal {
     private String strIngredient19;
     private String strIngredient20;
 
+    public Meal() {
+
+    }
+
     // Getter & Setter
     public String getIdMeal() { return idMeal; }
     public void setIdMeal(String idMeal) { this.idMeal = idMeal; }

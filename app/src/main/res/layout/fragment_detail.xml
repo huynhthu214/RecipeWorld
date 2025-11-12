@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F8F8F8"
     android:padding="16dp">
 
     <LinearLayout
@@ -9,36 +10,62 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!-- Ảnh món ăn -->
         <ImageView
             android:id="@+id/imgMealDetail"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/meal_image" />
+            android:background="@drawable/bg_image_round"
+            android:contentDescription="@string/meal_image"/>
 
+        <!-- Tên món -->
         <TextView
-            android:id="@+id/tvMealName"
+            android:id="@+id/tvMealNameDetail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Meal Name"
+            android:textSize="22sp"
             android:textStyle="bold"
-            android:textSize="20sp"
-            android:paddingTop="8dp"
-            android:text="Tên món ăn" />
+            android:textColor="#222222"
+            android:layout_marginTop="12dp"/>
 
+        <!-- Hướng dẫn nấu -->
         <TextView
-            android:id="@+id/tvInstructions"
+            android:id="@+id/tvMealInstructions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:text="Hướng dẫn nấu ăn sẽ hiển thị ở đây." />
+            android:text="Cooking instructions..."
+            android:textSize="16sp"
+            android:textColor="#555555"
+            android:layout_marginTop="8dp"/>
 
-        <TextView
-            android:id="@+id/tvYoutubeLink"
+        <!-- Button xem video -->
+        <Button
+            android:id="@+id/btnWatchVideo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/holo_blue_dark"
-            android:paddingTop="8dp"
-            android:text="Xem video hướng dẫn" />
+            android:text="Xem video"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#FF5722"
+            android:textColor="#FFFFFF"/>
 
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:backgroundTint="#FF5722"
+            android:textColor="#FFFFFF"/>
+
+        <WebView
+            android:id="@+id/webViewVideo"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:visibility="gone"
+            android:layout_marginTop="16dp"/>
     </LinearLayout>
+
 </ScrollView>

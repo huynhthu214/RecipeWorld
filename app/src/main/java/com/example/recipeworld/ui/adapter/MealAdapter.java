@@ -6,26 +6,35 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.example.recipeworld.R;
 import com.example.recipeworld.data.model.Meal;
+
 import java.util.List;
 
 public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder> {
+
     private Context context;
     private List<Meal> mealList;
-    private OnMealClickListener listener;
+    private OnItemClickListener listener;
 
-    public interface OnMealClickListener {
-        void onMealClick(Meal meal);
+    public interface OnItemClickListener {
+        void onItemClick(Meal meal);
     }
 
-    public MealAdapter(Context context, List<Meal> mealList, OnMealClickListener listener) {
+    public MealAdapter(Context context, List<Meal> mealList, OnItemClickListener listener) {
         this.context = context;
         this.mealList = mealList;
         this.listener = listener;
+    }
+
+    public void setMealList(List<Meal> mealList) {
+        this.mealList = mealList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -41,19 +50,12 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter.MealViewHolder
         holder.tvMealName.setText(meal.getStrMeal());
         Glide.with(context).load(meal.getStrMealThumb()).into(holder.imgMeal);
 
-        holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onMealClick(meal);
-        });
+        holder.itemView.setOnClickListener(v -> listener.onItemClick(meal));
     }
 
     @Override
     public int getItemCount() {
-        return mealList != null ? mealList.size() : 0;
-    }
-
-    public void setMealList(List<Meal> newList) {
-        this.mealList = newList;
-        notifyDataSetChanged();
+        return mealList == null ? 0 : mealList.size();
     }
 
     static class MealViewHolder extends RecyclerView.ViewHolder {

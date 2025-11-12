@@ -7,18 +7,39 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.recipeworld.ui.main.HomeFragment"
-        android:label="Home" >
+        android:label="Home">
         <action
             android:id="@+id/action_home_to_detail"
             app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_home_to_favorite"
+            app:destination="@id/favoriteFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.example.recipeworld.ui.detail.DetailFragment"
-        android:label="Detail" >
+        android:label="Detail">
         <argument
-            android:name="mealId"
-            app:argType="string" />
+            android:name="mealName"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="mealThumb"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="mealInstructions"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="mealYoutube"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
+
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.example.recipeworld.ui.main.FavoriteFragment"
+        android:label="Favorite" />
 </navigation>
