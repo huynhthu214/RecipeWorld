@@ -1,71 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#F8F8F8"
-    android:padding="16dp">
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout android:orientation="vertical" android:padding="12dp"
+        android:layout_width="match_parent" android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <!-- Ảnh món ăn -->
-        <ImageView
-            android:id="@+id/imgMealDetail"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:background="@drawable/bg_image_round"
-            android:contentDescription="@string/meal_image"/>
-
-        <!-- Tên món -->
-        <TextView
-            android:id="@+id/tvMealNameDetail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Meal Name"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="#222222"
-            android:layout_marginTop="12dp"/>
-
-        <!-- Hướng dẫn nấu -->
-        <TextView
-            android:id="@+id/tvMealInstructions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Cooking instructions..."
-            android:textSize="16sp"
-            android:textColor="#555555"
-            android:layout_marginTop="8dp"/>
-
-        <!-- Button xem video -->
-        <Button
-            android:id="@+id/btnWatchVideo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Xem video"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="#FF5722"
-            android:textColor="#FFFFFF"/>
-
-        <Button
-            android:id="@+id/btnBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Back"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:backgroundTint="#FF5722"
-            android:textColor="#FFFFFF"/>
-
-        <WebView
-            android:id="@+id/webViewVideo"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:visibility="gone"
-            android:layout_marginTop="16dp"/>
+        <ImageView android:id="@+id/imgDetail" android:layout_width="match_parent" android:layout_height="200dp" android:scaleType="centerCrop"/>
+        <TextView android:id="@+id/tvDetailName" android:textSize="20sp" android:textStyle="bold" android:layout_marginTop="8dp" android:layout_height="match_parent" android:layout_width="match_parent"/>
+        <TextView android:id="@+id/tvInstructions" android:layout_marginTop="8dp" android:layout_height="match_parent" android:layout_width="match_parent"/>
+        <Button android:id="@+id/btnWatch" android:text="Watch video" android:layout_marginTop="12dp" android:layout_height="match_parent" android:layout_width="match_parent"/>
+        <Button android:id="@+id/btnFavorite" android:text="Save Favorite" android:layout_marginTop="8dp" android:layout_height="match_parent" android:layout_width="match_parent"/>
     </LinearLayout>
-
 </ScrollView>

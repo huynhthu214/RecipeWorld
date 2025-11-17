@@ -4,95 +4,63 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.SearchView;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.recipeworld.R;
-import com.example.recipeworld.ui.adapter.MealAdapter;
-import com.example.recipeworld.viewmodel.HomeViewModel;
+import com.example.recipeworld.ui.adapter.RecipeAdapter;
+import com.example.recipeworld.ui.detail.DetailFragment;
+import com.example.recipeworld.viewmodel.MealViewModel;
 
 public class HomeFragment extends Fragment {
 
-    private HomeViewModel viewModel;
-    private MealAdapter adapter;
-    private RecyclerView recyclerView;
-    private SearchView searchView;
-    private Button btnFavorite;
+    private MealViewModel viewModel;
+    private RecipeAdapter adapter;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_home, container, false);
+    }
 
-        // Ánh xạ view
-        recyclerView = view.findViewById(R.id.rvMeals);
-        searchView = view.findViewById(R.id.searchView);
-        btnFavorite = view.findViewById(R.id.btnFavorite);
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        // Setup RecyclerView
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        RecyclerView recyclerView = view.findViewById(R.id.rv_trending_recipes);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        // ViewModel
-        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-
-        // Adapter với sự kiện click item → sang DetailFragment
-        adapter = new MealAdapter(getContext(), null, meal -> {
-            NavController navController = NavHostFragment.findNavController(HomeFragment.this);
-
-            String name = meal.getStrMeal() != null ? meal.getStrMeal() : "";
-            String thumb = meal.getStrMealThumb() != null ? meal.getStrMealThumb() : "";
-            String instructions = meal.getStrInstructions() != null ? meal.getStrInstructions() : "";
-            String youtube = meal.getStrYoutube() != null ? meal.getStrYoutube() : "";
-
-            HomeFragmentDirections.ActionHomeToDetail action =
-                    HomeFragmentDirections.actionHomeToDetail(name, thumb, instructions, youtube);
-
-            navController.navigate(action);
+        // Tạo adapter với listener mở DetailFragment theo idMeal
+        adapter = new RecipeAdapter(getContext(), meal -> {
+            DetailFragment fragment = DetailFragment.newInstance(meal.getIdMeal());
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.main_activity_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
+
         recyclerView.setAdapter(adapter);
 
-        // Quan sát LiveData từ ViewModel
-        viewModel.getMealsLiveData().observe(getViewLifecycleOwner(), meals -> {
-            if (meals != null) adapter.setMealList(meals);
-        });
+        // Sử dụng MealViewModel để load danh sách món ăn
+        viewModel = new ViewModelProvider(this).get(MealViewModel.class);
+        viewModel.getMeals().observe(getViewLifecycleOwner(), meals -> adapter.submitList(meals));
 
-        // Mặc định hiển thị vài món trước
-        viewModel.searchMeals("noodles");
+        // Load mặc định món "chicken"
+        viewModel.loadMealsByIngredient("chicken");
 
-
-        // Tìm kiếm
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (query != null && !query.trim().isEmpty()) {
-                    viewModel.searchMeals(query.trim());
-                    searchView.clearFocus();
-                }
-                return true;
+        // Search theo nguyên liệu
+        EditText searchEdit = view.findViewById(R.id.edit_search);
+        searchEdit.setOnEditorActionListener((v, actionId, event) -> {
+            String query = searchEdit.getText().toString().trim();
+            if (!query.isEmpty()) {
+                viewModel.loadMealsByIngredient(query);
             }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
+            return true;
         });
-
-        // Nút Favorite → sang FavoriteFragment
-        btnFavorite.setOnClickListener(v -> {
-            NavController navController = NavHostFragment.findNavController(HomeFragment.this);
-            navController.navigate(R.id.favoriteFragment);
-        });
-
-        return view;
     }
 }

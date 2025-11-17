@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">RecipeWorld</string>
-    <string name="meal_image">Meal image</string>
+    <string name="recipe_author_placeholder">Anna\n</string>
 </resources>

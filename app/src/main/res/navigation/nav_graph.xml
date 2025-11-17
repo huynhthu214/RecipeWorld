@@ -1,45 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/mainFragment">
 
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.example.recipeworld.ui.main.HomeFragment"
-        android:label="Home">
-        <action
-            android:id="@+id/action_home_to_detail"
+        android:id="@+id/mainFragment"
+        android:name="com.example.recipeworld.ui.main.MainFragment"
+        android:label="Home" >
+        <action android:id="@+id/action_mainFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
-        <action
-            android:id="@+id/action_home_to_favorite"
-            app:destination="@id/favoriteFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.example.recipeworld.ui.detail.DetailFragment"
-        android:label="Detail">
-        <argument
-            android:name="mealName"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="mealThumb"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="mealInstructions"
-            app:argType="string"
-            app:nullable="true" />
-        <argument
-            android:name="mealYoutube"
-            app:argType="string"
-            app:nullable="true" />
-    </fragment>
+        android:label="Detail" />
 
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.example.recipeworld.ui.main.FavoriteFragment"
-        android:label="Favorite" />
+        android:name="com.example.recipeworld.ui.favorites.FavoriteFragment"
+        android:label="Favorites" />
 </navigation>

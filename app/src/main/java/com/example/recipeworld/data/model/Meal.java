@@ -1,56 +1,114 @@
 package com.example.recipeworld.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Meal {
+
+    @SerializedName("idMeal")
     private String idMeal;
-    private String strMeal;
-    private String strMealThumb;
-    private String strYoutube;
-    private String strInstructions;
-    private String strIngredient1;
-    private String strIngredient2;
-    private String strIngredient3;
-    private String strIngredient4;
-    private String strIngredient5;
-    private String strIngredient6;
-    private String strIngredient7;
-    private String strIngredient8;
-    private String strIngredient9;
-    private String strIngredient10;
-    private String strIngredient11;
-    private String strIngredient12;
-    private String strIngredient13;
-    private String strIngredient14;
-    private String strIngredient15;
-    private String strIngredient16;
-    private String strIngredient17;
-    private String strIngredient18;
-    private String strIngredient19;
-    private String strIngredient20;
 
+    @SerializedName("strMeal")
+    private String name;
+
+    @SerializedName("strDrinkAlternate")
+    private String drinkAlternate;
+
+    @SerializedName("strCategory")
+    private String category;
+
+    @SerializedName("strArea")
+    private String area;
+
+    @SerializedName("strInstructions")
+    private String instructions;
+
+    @SerializedName("strMealThumb")
+    private String thumbnail;
+
+    @SerializedName("strTags")
+    private String tags;
+
+    @SerializedName("strYoutube")
+    private String youtubeLink;
+
+    // Các nguyên liệu (API có 20 cặp ingredient + measure)
+    @SerializedName("strIngredient1")
+    private String ingredient1;
+    @SerializedName("strMeasure1")
+    private String measure1;
+
+    @SerializedName("strIngredient2")
+    private String ingredient2;
+    @SerializedName("strMeasure2")
+    private String measure2;
+
+    @SerializedName("strSource")
+    private String source;
+
+    // Constructor, Getter, Setter
     public Meal() {
-
     }
 
-    // Getter & Setter
-    public String getIdMeal() { return idMeal; }
-    public void setIdMeal(String idMeal) { this.idMeal = idMeal; }
+    public String getIdMeal() {
+        return idMeal;
+    }
 
-    public String getStrMeal() { return strMeal; }
-    public void setStrMeal(String strMeal) { this.strMeal = strMeal; }
+    public String getName() {
+        return name;
+    }
 
-    public String getStrMealThumb() { return strMealThumb; }
-    public void setStrMealThumb(String strMealThumb) { this.strMealThumb = strMealThumb; }
+    public String getCategory() {
+        return category;
+    }
 
-    public String getStrYoutube() { return strYoutube; }
-    public void setStrYoutube(String strYoutube) { this.strYoutube = strYoutube; }
+    public String getArea() {
+        return area;
+    }
 
-    public String getStrInstructions() { return strInstructions; }
-    public void setStrInstructions(String strInstructions) { this.strInstructions = strInstructions; }
+    public String getInstructions() {
+        return instructions;
+    }
 
-    // Có thể thêm constructor nhanh gọn:
-    public Meal(String idMeal, String strMeal, String strMealThumb) {
-        this.idMeal = idMeal;
-        this.strMeal = strMeal;
-        this.strMealThumb = strMealThumb;
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public String getYoutubeLink() {
+        return youtubeLink;
+    }
+
+    public String getIngredient1() {
+        return ingredient1;
+    }
+
+    public String getMeasure1() {
+        return measure1;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setIdMeal(String id) {
+    }
+
+    public void setStrMeal(String name) {
+    }
+
+    public void setStrMealThumb(String thumb) {
+    }
+
+    public void setStrYoutube(String youtube) {
+    }
+
+    public void setStrInstructions(String instructions) {
+    }
+
+    public String getStrMeal() {
+        return "";
     }
 }

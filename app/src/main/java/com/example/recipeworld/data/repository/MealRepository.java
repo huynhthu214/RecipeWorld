@@ -1,14 +1,19 @@
 package com.example.recipeworld.data.repository;
 
+import android.content.Context;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.recipeworld.data.api.MealApiService;
-import com.example.recipeworld.data.api.RetrofitClient;
+import com.example.recipeworld.data.db.FavoriteMeal;
+import com.example.recipeworld.data.db.MealDatabase;
 import com.example.recipeworld.data.model.Meal;
 import com.example.recipeworld.data.api.MealResponse;
+import com.example.recipeworld.data.api.MealApiService;
+import com.example.recipeworld.data.api.RetrofitClient;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -16,55 +21,74 @@ import retrofit2.Response;
 
 public class MealRepository {
 
-    private final MealApiService apiService;
+    private final MealApiService api;
+    private final MealDatabase db;
+    private final Executor executor = Executors.newSingleThreadExecutor();
 
-    public MealRepository() {
-        apiService = RetrofitClient.getMealApiService();
+    public MealRepository(Context context) {
+        api = RetrofitClient.getMealApiService();
+        db = MealDatabase.getInstance(context);
     }
 
-    // Lấy danh sách món theo nguyên liệu
+    // ===================== API =====================
+
     public LiveData<List<Meal>> getMealsByIngredient(String ingredient) {
-        MutableLiveData<List<Meal>> mealsLiveData = new MutableLiveData<>();
+        MutableLiveData<List<Meal>> result = new MutableLiveData<>();
 
-        apiService.filterMealsByIngredient(ingredient).enqueue(new Callback<MealResponse>() {
+        api.filterMealsByIngredient(ingredient).enqueue(new Callback<MealResponse>() {
             @Override
             public void onResponse(Call<MealResponse> call, Response<MealResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    mealsLiveData.setValue(response.body().getMeals());
-                } else {
-                    mealsLiveData.setValue(null);
-                }
+                if (response.isSuccessful() && response.body() != null)
+                    result.setValue(response.body().getMeals());
+                else
+                    result.setValue(null);
             }
 
             @Override
             public void onFailure(Call<MealResponse> call, Throwable t) {
-                mealsLiveData.setValue(null);
+                result.setValue(null);
             }
         });
 
-        return mealsLiveData;
+        return result;
     }
 
-    // Lấy chi tiết món theo idMeal
-    public LiveData<Meal> getMealDetail(String mealId) {
-        MutableLiveData<Meal> mealLiveData = new MutableLiveData<>();
+    public LiveData<List<Meal>> getMealDetail(String idMeal) {
+        MutableLiveData<List<Meal>> result = new MutableLiveData<>();
 
-        apiService.getMealDetails(mealId).enqueue(new Callback<MealResponse>() {
+        api.getMealDetails(idMeal).enqueue(new Callback<MealResponse>() {
             @Override
             public void onResponse(Call<MealResponse> call, Response<MealResponse> response) {
-                if (response.isSuccessful() && response.body() != null && !response.body().getMeals().isEmpty()) {
-                    mealLiveData.setValue(response.body().getMeals().get(0));
-                } else {
-                    mealLiveData.setValue(null);
-                }
+                if (response.isSuccessful() && response.body() != null)
+                    result.setValue(response.body().getMeals());
+                else
+                    result.setValue(null);
             }
 
             @Override
             public void onFailure(Call<MealResponse> call, Throwable t) {
-                mealLiveData.setValue(null);
+                result.setValue(null);
             }
         });
 
-        return mealLiveData;
+        return result;
+    }
+
+    // ===================== ROOM =====================
+
+    public LiveData<List<FavoriteMeal>> getAllFavorites() {
+        return db.mealDao().getAllFavorites();
+    }
+
+    public void insertFavorite(FavoriteMeal meal) {
+        executor.execute(() -> db.mealDao().insertFavorite(meal));
+    }
+
+    public void deleteFavorite(FavoriteMeal meal) {
+        executor.execute(() -> db.mealDao().deleteFavorite(meal));
+    }
+
+    public FavoriteMeal getFavoriteById(String id) {
+        return db.mealDao().getFavoriteById(id);
     }
 }
