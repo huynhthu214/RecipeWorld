@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">RecipeWorld</string>
     <string name="recipe_author_placeholder">Anna\n</string>
+    <string name="watch_on_youtube">Watch on Youtube</string>
+    <string name="instructions_title">Instruction</string>
+    <string name="meal_not_found">Meal not found</string>
 </resources>

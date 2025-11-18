@@ -1,21 +1,27 @@
 package com.example.recipeworld.viewmodel;
 
+import android.app.Application;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.recipeworld.data.model.Meal;
 import com.example.recipeworld.data.repository.MealRepository;
 
 import java.util.List;
 
-public class MealViewModel extends ViewModel {
+// Sửa lỗi: Kế thừa từ AndroidViewModel để truy cập Application/Context
+public class MealViewModel extends AndroidViewModel {
 
     private final MealRepository repository;
     private final MutableLiveData<List<Meal>> mealsLiveData;
 
-    public MealViewModel() {
-        repository = new MealRepository();
+    // Sửa lỗi: Constructor phải nhận Application
+    public MealViewModel(@NonNull Application application) {
+        super(application);
+        // Truyền Context (là application.getApplicationContext()) vào MealRepository
+        repository = new MealRepository(application.getApplicationContext());
         mealsLiveData = new MutableLiveData<>();
     }
 
@@ -25,6 +31,8 @@ public class MealViewModel extends ViewModel {
 
     // Load món ăn theo nguyên liệu
     public void loadMealsByIngredient(String ingredient) {
+        // Lưu ý: .observeForever() có thể gây rò rỉ bộ nhớ.
+        // Trong ViewModel, tốt hơn là nên dùng MediatorLiveData để quản lý LiveData từ Repository.
         repository.getMealsByIngredient(ingredient).observeForever(meals -> {
             mealsLiveData.setValue(meals);
         });
@@ -32,7 +40,7 @@ public class MealViewModel extends ViewModel {
 
     // Tìm món ăn theo tên
     public void searchMeals(String mealName) {
-        repository.searchMeals(mealName).observeForever(meals -> {
+        repository.getMealsByIngredient(mealName).observeForever(meals -> {
             mealsLiveData.setValue(meals);
         });
     }

@@ -1,4 +1,4 @@
-package com.example.recipeworld.viewmodel;
+package com.example.recipeworld.ui.detail;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -11,11 +11,11 @@ import com.example.recipeworld.data.model.Meal;
 
 import java.util.List;
 
-public class DetailViewModel extends AndroidViewModel {
+public class DetailFragment extends AndroidViewModel {
 
     private final MealRepository repository;
 
-    public DetailViewModel(@NonNull Application application) {
+    public DetailFragment(@NonNull Application application) {
         super(application);
         repository = new MealRepository(application.getApplicationContext());
     }

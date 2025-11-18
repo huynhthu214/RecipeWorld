@@ -32,7 +32,7 @@ public class DetailViewModel extends AndroidViewModel {
     }
 
     public void saveFavorite(Meal m) {
-        FavoriteMeal f = new FavoriteMeal(m.getIdMeal(), m.getStrMeal(), m.getStrMealThumb(), m.getStrYoutube(), m.getStrInstructions());
+        FavoriteMeal f = new FavoriteMeal(m.getIdMeal(), m.getStrMeal(), m.getThumbnail(), m.getYoutubeLink(), m.getInstructions());
         repo.insertFavorite(f);
     }
 

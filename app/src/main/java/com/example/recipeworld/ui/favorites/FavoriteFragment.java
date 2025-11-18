@@ -7,17 +7,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.recipeworld.R;
 import com.example.recipeworld.data.db.FavoriteMeal;
 import com.example.recipeworld.data.db.MealDatabase;
-import com.example.recipeworld.ui.detail.*;
-
-import java.util.List;
+import com.example.recipeworld.ui.detail.MealDetailFragment;
 
 public class FavoriteFragment extends Fragment {
 
@@ -43,17 +41,24 @@ public class FavoriteFragment extends Fragment {
         adapter.setOnItemClickListener(new FavoriteAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(FavoriteMeal meal) {
-                DetailFragment fragment = DetailFragment.newInstance(meal.getIdMeal());
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.main_activity_container, fragment)
-                        .addToBackStack(null)
-                        .commit();
+                if (meal.getIdMeal() != null) {
+                    MealDetailFragment fragment = MealDetailFragment.newInstance(meal.getIdMeal());
+                    getParentFragmentManager().beginTransaction()
+                            .replace(R.id.main_activity_container, fragment)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    Toast.makeText(getContext(), "ID món ăn yêu thích bị lỗi.", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onFavoriteClick(FavoriteMeal meal) {
+                // Sửa lỗi: Gọi .mealDao() thay vì .favoriteMealDao()
                 AsyncTask.execute(() -> {
-                    MealDatabase.getInstance(getContext()).favoriteMealDao().delete(meal);
+                    if (getContext() != null) {
+                        MealDatabase.getInstance(getContext()).mealDao().deleteFavorite(meal);
+                    }
                 });
             }
         });
@@ -64,9 +69,16 @@ public class FavoriteFragment extends Fragment {
     }
 
     private void loadFavorites() {
-        MealDatabase.getInstance(getContext())
-                .favoriteMealDao()
-                .getAllFavorites()
-                .observe(getViewLifecycleOwner(), favoriteMeals -> adapter.setFavoriteMeals(favoriteMeals));
+        if (getContext() != null) {
+            // Sửa lỗi: Gọi .mealDao() thay vì .favoriteMealDao()
+            MealDatabase.getInstance(getContext())
+                    .mealDao()
+                    .getAllFavorites()
+                    .observe(getViewLifecycleOwner(), favoriteMeals -> {
+                        if (favoriteMeals != null) {
+                            adapter.setFavoriteMeals(favoriteMeals);
+                        }
+                    });
+        }
     }
 }
