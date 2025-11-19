@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.MainActivity">
 
-    <!-- Fragment container -->
+    <!-- Fragment Container -->
     <FrameLayout
         android:id="@+id/nav_host_fragment"
         android:layout_width="0dp"
@@ -24,10 +24,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
         android:paddingTop="12dp"
-        android:paddingBottom="32dp"
+        android:paddingBottom="24dp"
         android:background="@android:color/white"
+        android:elevation="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -46,9 +46,8 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:src="@drawable/ic_home"
-                android:padding="8dp"
                 android:contentDescription="Home"
-                android:backgroundTint="#D1F4A4"/>
+                android:padding="8dp"/>
 
             <ImageButton
                 android:id="@+id/btn_favorite"
@@ -57,8 +56,8 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:src="@drawable/ic_favorite"
-                android:padding="8dp"
-                android:contentDescription="Favorite"/>
+                android:contentDescription="Favorite"
+                android:padding="8dp"/>
 
             <ImageButton
                 android:id="@+id/btn_categories"
@@ -67,8 +66,8 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:src="@drawable/ic_grid"
-                android:padding="8dp"
-                android:contentDescription="Categories"/>
+                android:contentDescription="Categories"
+                android:padding="8dp"/>
 
             <ImageButton
                 android:id="@+id/btn_profile"
@@ -77,8 +76,8 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:src="@drawable/ic_profile"
-                android:padding="8dp"
-                android:contentDescription="Profile"/>
+                android:contentDescription="Profile"
+                android:padding="8dp"/>
         </LinearLayout>
     </LinearLayout>
 

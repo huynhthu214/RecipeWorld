@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.example.recipeworld.R;
 import com.example.recipeworld.data.db.FavoriteMeal;
@@ -59,19 +60,24 @@ public class MealDetailFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_meal_detail, container, false);
 
-        // Find all views
+        // Bind views
         tvMealName      = view.findViewById(R.id.tv_meal_name);
         tvInstructions  = view.findViewById(R.id.tv_instructions);
         ivMealThumbnail = view.findViewById(R.id.iv_meal_thumbnail);
         btnWatchVideo   = view.findViewById(R.id.btn_watch_youtube);
         btnSaveFavorite = view.findViewById(R.id.btn_save_favorite);
 
-        // Listeners
         btnWatchVideo.setOnClickListener(v -> openYoutubeVideo());
         btnSaveFavorite.setOnClickListener(v -> toggleFavorite());
 
         ImageButton btnBack = view.findViewById(R.id.btn_back);
-        btnBack.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+        btnBack.setOnClickListener(v -> {
+            if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                getParentFragmentManager().popBackStack();
+            } else {
+                requireActivity().getOnBackPressedDispatcher().onBackPressed();
+            }
+        });
 
         return view;
     }
@@ -80,16 +86,14 @@ public class MealDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Khởi tạo ViewModel
         detailViewModel   = new ViewModelProvider(this).get(DetailViewModel.class);
         favoriteViewModel = new ViewModelProvider(this).get(FavoriteViewModel.class);
 
-        // Load chi tiết món ăn
         if (mealId != null) {
             detailViewModel.loadDetail(mealId);
         }
 
-        // Observe dữ liệu món ăn
+        // Observe chi tiết món
         detailViewModel.getMeal().observe(getViewLifecycleOwner(), meal -> {
             if (meal == null) return;
 
@@ -98,23 +102,24 @@ public class MealDetailFragment extends Fragment {
             tvMealName.setText(meal.getStrMeal());
             tvInstructions.setText(meal.getInstructions());
 
-            // === LOAD ẢNH AN TOÀN 100% ===
-            String thumb = meal.getThumbnail();  // bạn đã @SerializedName đúng rồi
+            // Load ảnh an toàn
+            String thumb = meal.getThumbnail();
             if (thumb != null && !thumb.trim().isEmpty() && !"null".equalsIgnoreCase(thumb)) {
-                Glide.with(MealDetailFragment.this)  // Dùng Fragment → không crash
+                Glide.with(MealDetailFragment.this)
                         .load(thumb)
                         .centerCrop()
                         .into(ivMealThumbnail);
             }
 
-            // Cập nhật icon yêu thích
             updateFavoriteIcon();
         });
     }
 
-    // Mở video YouTube
+    /** ============================
+     *  MỞ VIDEO YOUTUBE
+     *  ============================ */
     private void openYoutubeVideo() {
-        if (currentMeal == null || currentMeal.getStrYoutube() == null || currentMeal.getStrYoutube().trim().isEmpty()) {
+        if (currentMeal == null || currentMeal.getStrYoutube() == null) {
             Toast.makeText(requireContext(), "Video chưa có sẵn", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -131,7 +136,9 @@ public class MealDetailFragment extends Fragment {
                 .commit();
     }
 
-    // Thêm/Xóa yêu thích
+    /** ============================
+     *  THÊM/XÓA YÊU THÍCH
+     *  ============================ */
     private void toggleFavorite() {
         if (currentMeal == null) return;
 
@@ -143,29 +150,37 @@ public class MealDetailFragment extends Fragment {
                 currentMeal.getInstructions()
         );
 
-        favoriteViewModel.isFavorite(currentMeal.getIdMeal())
-                .observe(getViewLifecycleOwner(), isFavorite -> {
-                    if (Boolean.TRUE.equals(isFavorite)) {
+        favoriteViewModel.getFavoriteById(currentMeal.getIdMeal())
+                .observe(getViewLifecycleOwner(), favorite -> {
+                    if (favorite != null) {
                         favoriteViewModel.deleteFavorite(fav);
                         btnSaveFavorite.setImageResource(R.drawable.ic_favorite);
+                        Toast.makeText(requireContext(), "Đã xóa khỏi yêu thích", Toast.LENGTH_SHORT).show();
                     } else {
                         favoriteViewModel.insertFavorite(fav);
                         btnSaveFavorite.setImageResource(R.drawable.ic_favorite_filled);
+                        Toast.makeText(requireContext(), "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    // Cập nhật icon khi mở chi tiết
+
+    /** ============================
+     *  CẬP NHẬT ICON YÊU THÍCH
+     *  ============================ */
     private void updateFavoriteIcon() {
         if (currentMeal == null) return;
 
-        favoriteViewModel.isFavorite(currentMeal.getIdMeal())
-                .observe(getViewLifecycleOwner(), isFavorite -> {
-                    if (Boolean.TRUE.equals(isFavorite)) {
-                        btnSaveFavorite.setImageResource(R.drawable.ic_favorite_filled);
-                    } else {
-                        btnSaveFavorite.setImageResource(R.drawable.ic_favorite);
-                    }
-                });
+        favoriteViewModel.getFavoriteById(currentMeal.getIdMeal())
+            .observe(getViewLifecycleOwner(), favorite -> {
+                if (favorite != null) {
+                    btnSaveFavorite.setImageResource(R.drawable.ic_favorite_filled);
+                    Toast.makeText(requireContext(), "Món đang ở yêu thích", Toast.LENGTH_SHORT).show();
+                } else {
+                    btnSaveFavorite.setImageResource(R.drawable.ic_favorite);
+                    Toast.makeText(requireContext(), "Món chưa được yêu thích", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
+
 }

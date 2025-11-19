@@ -1,9 +1,9 @@
 package com.example.recipeworld.ui.main;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.recipeworld.R;
 import com.example.recipeworld.ui.favorites.FavoriteFragment;
 import com.example.recipeworld.ui.main.HomeFragment;
-//import com.example.recipeworld.ui.profile.ProfileFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,43 +21,56 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Gán các nút bottom nav
+        // Bind bottom nav buttons
         btnHome = findViewById(R.id.btn_home);
         btnFavorite = findViewById(R.id.btn_favorite);
-        btnGrid = findViewById(R.id.btn_categories); // ID trong XML là btn_categories
+        btnGrid = findViewById(R.id.btn_categories);
         btnProfile = findViewById(R.id.btn_profile);
 
-        // Mặc định load HomeFragment
+        // Load mặc định HomeFragment
         if (savedInstanceState == null) {
-            loadFragment(new HomeFragment(), false); // false = không cần thêm vào back stack
+            loadFragment(new HomeFragment(), false);
         }
 
-        // Xử lý click từng button
-        // Thêm logic xóa back stack khi chuyển tab chính để tránh lỗi
-        btnHome.setOnClickListener(v -> loadFragment(new HomeFragment(), true));
-        btnFavorite.setOnClickListener(v -> loadFragment(new FavoriteFragment(), true));
-        btnGrid.setOnClickListener(v -> loadFragment(new HomeFragment(), true)); // Đang dùng HomeFragment làm placeholder
-//        btnProfile.setOnClickListener(v -> loadFragment(new ProfileFragment(), true));
+        // Button listeners
+        btnHome.setOnClickListener(v -> loadFragment(new HomeFragment(), false));
+        btnFavorite.setOnClickListener(v -> loadFragment(new FavoriteFragment(), false));
+        btnGrid.setOnClickListener(v -> loadFragment(new HomeFragment(), false)); // placeholder
+//        btnProfile.setOnClickListener(v -> loadFragment(new ProfileFragment(), false));
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                    // Nếu có fragment trong back stack → pop
+                    getSupportFragmentManager().popBackStack();
+                } else {
+                    // Nếu không còn fragment nào → thoát app
+                    finish();
+                }
+            }
+        });
+
     }
 
     /**
-     * Tải Fragment vào container chính.
-     * @param fragment Fragment cần hiển thị.
-     * @param clearBackStack True nếu đây là tab chính và cần xóa back stack (để tránh lỗi back)
+     * Load Fragment vào container
+     * @param fragment Fragment cần load
+     * @param clearBackStack True nếu muốn xóa toàn bộ back stack (ví dụ reset app)
      */
     private void loadFragment(Fragment fragment, boolean clearBackStack) {
-        // Xóa back stack khi chuyển đổi giữa các tab chính (Home, Favorite)
         if (clearBackStack) {
             getSupportFragmentManager().popBackStackImmediate(null, 0);
         }
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-        // Kiểm tra xem Fragment đó có đang được hiển thị không
-        if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getName()) == null) {
-            // Thay thế fragment
-            ft.replace(R.id.main_activity_container, fragment, fragment.getClass().getName());
-            ft.commit();
-        }
+        // Luôn replace fragment, không check tag
+        ft.replace(R.id.main_activity_container, fragment, fragment.getClass().getName());
+        ft.commit();
     }
+
+    /**
+     * Override onBackPressed để xử lý back stack chuẩn
+     */
 }

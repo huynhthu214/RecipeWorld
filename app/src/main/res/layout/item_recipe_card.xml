@@ -20,14 +20,6 @@
             android:src="@drawable/ic_recipe_placeholder"
             android:contentDescription="Hình ảnh công thức" />
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:background="@drawable/gradient_overlay"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHeight_percent="0.6" />
-
         <ImageButton
             android:id="@+id/btn_favorite"
             android:layout_width="40dp"

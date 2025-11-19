@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.recipeworld.data.db.FavoriteMeal;
+import com.example.recipeworld.data.db.FavoriteMealDao;
 import com.example.recipeworld.data.db.MealDatabase;
 import com.example.recipeworld.data.model.Meal;
 import com.example.recipeworld.data.api.MealResponse;
@@ -22,12 +23,12 @@ import retrofit2.Response;
 public class MealRepository {
 
     private final MealApiService api;
-    private final MealDatabase db;
+    private final FavoriteMealDao favoriteDao;  // ← chỉ dao yêu thích
     private final Executor executor = Executors.newSingleThreadExecutor();
 
     public MealRepository(Context context) {
         api = RetrofitClient.getMealApiService();
-        db = MealDatabase.getInstance(context);
+        favoriteDao = MealDatabase.getInstance(context).mealDao();
     }
 
     // ===================== API =====================
@@ -77,18 +78,18 @@ public class MealRepository {
     // ===================== ROOM =====================
 
     public LiveData<List<FavoriteMeal>> getAllFavorites() {
-        return db.mealDao().getAllFavorites();
+        return favoriteDao.getAllFavorites();
     }
 
     public void insertFavorite(FavoriteMeal meal) {
-        executor.execute(() -> db.mealDao().insertFavorite(meal));
+        executor.execute(() -> favoriteDao.insertFavorite(meal));
     }
 
     public void deleteFavorite(FavoriteMeal meal) {
-        executor.execute(() -> db.mealDao().deleteFavorite(meal));
+        executor.execute(() -> favoriteDao.deleteFavorite(meal));
     }
 
-    public FavoriteMeal getFavoriteById(String id) {
-        return db.mealDao().getFavoriteById(id);
+    public LiveData<FavoriteMeal> getFavoriteById(String id) {
+        return favoriteDao.getFavoriteById(id);
     }
 }

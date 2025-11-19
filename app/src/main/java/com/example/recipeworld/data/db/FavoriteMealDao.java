@@ -19,8 +19,12 @@ public interface FavoriteMealDao {
     void deleteFavorite(FavoriteMeal meal);
 
     @Query("SELECT * FROM favorite_meals WHERE idMeal = :id LIMIT 1")
-    FavoriteMeal getFavoriteById(String id);
+    LiveData<FavoriteMeal> getFavoriteById(String id);
+
+    @Query("SELECT * FROM favorite_meals WHERE idMeal = :id LIMIT 1")
+    LiveData<FavoriteMeal> getFavoriteByIdLive(String id);
 
     @Query("SELECT * FROM favorite_meals ORDER BY uid DESC")
     LiveData<List<FavoriteMeal>> getAllFavorites();
 }
+
