@@ -12,6 +12,7 @@ import com.example.recipeworld.data.api.MealResponse;
 import com.example.recipeworld.data.api.MealApiService;
 import com.example.recipeworld.data.api.RetrofitClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -92,4 +93,27 @@ public class MealRepository {
     public LiveData<FavoriteMeal> getFavoriteById(String id) {
         return favoriteDao.getFavoriteById(id);
     }
+
+    public LiveData<List<Meal>> getMealsByCategory(String category) {
+        MutableLiveData<List<Meal>> mealsLiveData = new MutableLiveData<>();
+
+        api.getMealsByCategory(category).enqueue(new Callback<MealResponse>() {
+            @Override
+            public void onResponse(Call<MealResponse> call, Response<MealResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    mealsLiveData.setValue(response.body().getMeals());
+                } else {
+                    mealsLiveData.setValue(new ArrayList<>());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MealResponse> call, Throwable t) {
+                mealsLiveData.setValue(new ArrayList<>());
+            }
+        });
+
+        return mealsLiveData;
+    }
+
 }

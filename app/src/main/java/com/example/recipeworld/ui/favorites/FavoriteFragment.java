@@ -19,13 +19,12 @@ import com.example.recipeworld.data.db.FavoriteMeal;
 import com.example.recipeworld.ui.detail.MealDetailFragment;
 
 public class FavoriteFragment extends Fragment {
+
     private FavoriteViewModel favoriteViewModel;
     private RecyclerView rvFavorites;
     private FavoriteAdapter adapter;
 
-    public FavoriteFragment() {
-        // Required empty public constructor
-    }
+    public FavoriteFragment() { }
 
     @Nullable
     @Override
@@ -45,19 +44,15 @@ public class FavoriteFragment extends Fragment {
         adapter.setOnItemClickListener(new FavoriteAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(FavoriteMeal meal) {
-                if (meal.getIdMeal() != null) {
-                    MealDetailFragment fragment = MealDetailFragment.newInstance(meal.getIdMeal());
-                    getParentFragmentManager().beginTransaction()
-                            .replace(R.id.main_activity_container, fragment)
-                            .addToBackStack(null)
-                            .commit();
-                } else {
-                    Toast.makeText(getContext(), "ID món ăn bị lỗi.", Toast.LENGTH_SHORT).show();
-                }
+                MealDetailFragment fragment = MealDetailFragment.newInstance(meal.getIdMeal());
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.main_activity_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
             }
 
             @Override
-            public void onFavoriteClick(FavoriteMeal meal) {
+            public void onUnfavoriteClick(FavoriteMeal meal) {
                 favoriteViewModel.deleteFavorite(meal);
                 Toast.makeText(getContext(), "Đã xóa khỏi yêu thích", Toast.LENGTH_SHORT).show();
             }
@@ -70,12 +65,9 @@ public class FavoriteFragment extends Fragment {
 
     private void observeFavorites() {
         favoriteViewModel.getAllFavorites().observe(getViewLifecycleOwner(), favoriteMeals -> {
-            if (favoriteMeals != null) {
-                adapter.setFavoriteMeals(favoriteMeals);
-
-                if (favoriteMeals.isEmpty()) {
-                    Toast.makeText(getContext(), "Danh sách yêu thích trống", Toast.LENGTH_SHORT).show();
-                }
+            adapter.setFavoriteMeals(favoriteMeals);
+            if (favoriteMeals.isEmpty()) {
+                Toast.makeText(getContext(), "Danh sách yêu thích trống", Toast.LENGTH_SHORT).show();
             }
         });
     }

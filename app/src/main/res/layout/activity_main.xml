@@ -6,78 +6,72 @@
     android:id="@+id/main_activity_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.MainActivity">
+    tools:context=".ui.main.MainActivity"
+    android:background="#F5F5F5"> <androidx.appcompat.widget.Toolbar
+    android:id="@+id/app_toolbar"
+    android:layout_width="0dp"
+    android.layout_height="?attr/actionBarSize"
+    android:background="#F77D00"
+    android:elevation="4dp"
+    app:title="Recipe World"
+    app:titleTextColor="@android:color/white"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"  android:layout_height="10dp"/>
 
-    <!-- Fragment Container -->
     <FrameLayout
         android:id="@+id/nav_host_fragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/app_toolbar"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Bottom Navigation Bar -->
     <LinearLayout
         android:id="@+id/bottom_navigation_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="12dp"
-        android:paddingBottom="24dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp"
         android:background="@android:color/white"
-        android:elevation="16dp"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="56dp"
             android:orientation="horizontal"
             android:gravity="center"
-            android:background="@drawable/rounded_bottom_nav_bg">
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
 
             <ImageButton
                 android:id="@+id/btn_home"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@null"
-                android:src="@drawable/ic_home"
-                android:contentDescription="Home"
-                android:padding="8dp"/>
+                style="@style/CookpadBottomNavButton"
+                android:src="@drawable/ic_home_orange_selector"
+                android:contentDescription="Trang Chủ" />
 
             <ImageButton
                 android:id="@+id/btn_favorite"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@null"
+                style="@style/CookpadBottomNavButton"
                 android:src="@drawable/ic_favorite"
-                android:contentDescription="Favorite"
-                android:padding="8dp"/>
+                android:contentDescription="Công Thức Đã Lưu" />
 
             <ImageButton
                 android:id="@+id/btn_categories"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@null"
+                style="@style/CookpadBottomNavButton"
                 android:src="@drawable/ic_grid"
-                android:contentDescription="Categories"
-                android:padding="8dp"/>
+                android:contentDescription="Danh Mục" />
 
             <ImageButton
                 android:id="@+id/btn_profile"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@null"
+                style="@style/CookpadBottomNavButton"
                 android:src="@drawable/ic_profile"
-                android:contentDescription="Profile"
-                android:padding="8dp"/>
+                android:contentDescription="Trang Cá Nhân" />
         </LinearLayout>
     </LinearLayout>
 

@@ -48,6 +48,15 @@ public class MealViewModel extends AndroidViewModel {
             mealsLiveData.removeSource(source);
         });
     }
+
+    public void loadMealsByCategory(String category) {
+        LiveData<List<Meal>> source = repository.getMealsByCategory(category);
+        mealsLiveData.addSource(source, list -> {
+            mealsLiveData.setValue(list);
+            mealsLiveData.removeSource(source);
+        });
+    }
+
     // Tìm món ăn theo tên
     public void searchMeals(String mealName) {
         repository.getMealsByIngredient(mealName).observeForever(meals -> {

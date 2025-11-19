@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.recipeworld.R;
+import com.example.recipeworld.ui.category.MealFilterFragment;
 import com.example.recipeworld.ui.favorites.FavoriteFragment;
-import com.example.recipeworld.ui.main.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         // Button listeners
         btnHome.setOnClickListener(v -> loadFragment(new HomeFragment(), false));
         btnFavorite.setOnClickListener(v -> loadFragment(new FavoriteFragment(), false));
-        btnGrid.setOnClickListener(v -> loadFragment(new HomeFragment(), false)); // placeholder
+        btnGrid.setOnClickListener(v -> loadFragment(new MealFilterFragment(), false));// placeholder
 //        btnProfile.setOnClickListener(v -> loadFragment(new ProfileFragment(), false));
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
