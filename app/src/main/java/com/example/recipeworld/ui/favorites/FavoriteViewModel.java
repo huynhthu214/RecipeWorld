@@ -1,34 +1,41 @@
 package com.example.recipeworld.ui.favorites;
 
 import android.app.Application;
+import android.os.AsyncTask;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import com.example.recipeworld.data.db.FavoriteMeal;
+import com.example.recipeworld.data.db.MealDao;
+import com.example.recipeworld.data.db.MealDatabase;
 import com.example.recipeworld.data.repository.MealRepository;
 
 import java.util.List;
 
-/**
- * ViewModel giúp tách logic truy xuất dữ liệu khỏi giao diện.
- * Quan sát dữ liệu từ Room thông qua LiveData.
- */
 public class FavoriteViewModel extends AndroidViewModel {
 
-    private final MealRepository repo;
+    private final MealDao mealDao;
 
-    public FavoriteViewModel(@NonNull Application app) {
-        super(app);
-        repo = new MealRepository(app);
+    public FavoriteViewModel(@NonNull Application application) {
+        super(application);
+        mealDao = (MealDao) MealDatabase.getInstance(application).mealDao();
     }
 
-    public LiveData<List<FavoriteMeal>> getFavorites() {
-        return repo.getAllFavorites();
+    public void insertFavorite(FavoriteMeal meal) {
+        AsyncTask.execute(() -> mealDao.insertFavorite(meal));
     }
 
     public void deleteFavorite(FavoriteMeal meal) {
-        repo.deleteFavorite(meal);
+        AsyncTask.execute(() -> mealDao.deleteFavorite(meal));
+    }
+
+    public LiveData<Boolean> isFavorite(String idMeal) {
+        return mealDao.isFavorite(idMeal);
+    }
+
+    public LiveData<List<FavoriteMeal>> getAllFavorites() {
+        return mealDao.getAllFavorites();
     }
 }
-

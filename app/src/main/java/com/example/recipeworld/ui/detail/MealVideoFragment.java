@@ -61,10 +61,15 @@ public class MealVideoFragment extends Fragment {
     }
 
     private String extractVideoId(String url) {
-        if (url == null) return "";
-        // Ví dụ link: https://www.youtube.com/watch?v=IO0issT0Rmc
-        if (url.contains("v=")) {
-            return url.substring(url.indexOf("v=") + 2);
-        } else return url; // fallback
+        if (url == null || url.isEmpty()) return "";
+        String[] parts = url.split("v=");
+        if (parts.length > 1) {
+            return parts[1].split("&")[0]; // cái này quan trọng nhất: bỏ &xxx phía sau
+        }
+        // nếu là youtu.be/xxxx
+        if (url.contains("youtu.be/")) {
+            return url.substring(url.lastIndexOf("/") + 1).split("\\?")[0];
+        }
+        return url.trim();
     }
 }

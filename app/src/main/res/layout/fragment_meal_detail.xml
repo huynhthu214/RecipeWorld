@@ -11,7 +11,32 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="16dp">
+        android:paddingBottom="16dp"
+        tools:ignore="ExtraText">
+
+        <!-- Nút quay lại nổi trên ảnh -->
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_back"
+            android:backgroundTint="@color/black"
+            app:layout_constraintTop_toTopOf="@id/iv_meal_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/iv_meal_thumbnail"
+            android:elevation="8dp"/>
+
+        <ImageButton
+            android:id="@+id/btn_save_favorite"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_margin="16dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_favorite"
+            app:layout_constraintTop_toTopOf="@id/iv_meal_thumbnail"
+            app:layout_constraintEnd_toEndOf="@id/iv_meal_thumbnail"
+            android:elevation="8dp"/>
 
         <ImageView
             android:id="@+id/iv_meal_thumbnail"
