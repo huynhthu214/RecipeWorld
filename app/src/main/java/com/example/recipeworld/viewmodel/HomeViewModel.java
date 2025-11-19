@@ -4,6 +4,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.recipeworld.data.model.Meal;
@@ -16,44 +17,34 @@ import java.util.List;
 public class HomeViewModel extends AndroidViewModel {
 
     private final MealRepository repository;
-    private final MutableLiveData<List<Meal>> mealsLiveData = new MutableLiveData<>();
+    private final MediatorLiveData<List<Meal>> mealsLiveData = new MediatorLiveData<>();
 
-    // Sửa lỗi: Constructor phải nhận Application
     public HomeViewModel(@NonNull Application application) {
         super(application);
-        // Khởi tạo Repository bằng Application Context
         repository = new MealRepository(application.getApplicationContext());
 
-        // Có thể load mặc định mock data
         mealsLiveData.setValue(getAllMockData());
     }
 
-    // LiveData để fragment quan sát
     public LiveData<List<Meal>> getMealsLiveData() {
         return mealsLiveData;
     }
 
-    // Tìm kiếm món ăn theo nguyên liệu (API + fallback mock)
     public void searchMeals(String ingredient) {
-        if (repository != null) {
-            repository.getMealsByIngredient(ingredient).observeForever(meals -> {
-                if (meals != null && !meals.isEmpty()) {
-                    mealsLiveData.setValue(meals);
-                } else {
-                    mealsLiveData.setValue(filterMockData(ingredient));
-                }
-            });
-        } else {
-            // Trường hợp này không nên xảy ra sau khi fix constructor
-            mealsLiveData.setValue(filterMockData(ingredient));
-        }
+        LiveData<List<Meal>> source = repository.getMealsByIngredient(ingredient);
+
+        mealsLiveData.addSource(source, list -> {
+            mealsLiveData.setValue(list);
+            mealsLiveData.removeSource(source); // Optional: chỉ nếu muốn lấy 1 lần
+        });
     }
+
 
     private List<Meal> filterMockData(String ingredient) {
         List<Meal> filtered = new ArrayList<>();
         for (Meal meal : getAllMockData()) {
-            if (meal.getName().toLowerCase().contains(ingredient.toLowerCase()) || // Dùng getName()
-                    (meal.getInstructions() != null && // Dùng getInstructions()
+            if (meal.getStrMeal().toLowerCase().contains(ingredient.toLowerCase()) ||
+                    (meal.getInstructions() != null &&
                             meal.getInstructions().toLowerCase().contains(ingredient.toLowerCase()))) {
                 filtered.add(meal);
             }

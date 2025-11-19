@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +19,7 @@ import com.example.recipeworld.data.db.MealDatabase;
 import com.example.recipeworld.ui.detail.MealDetailFragment;
 
 public class FavoriteFragment extends Fragment {
-
+    private FavoriteViewModel favoriteViewModel;
     private RecyclerView rvFavorites;
     private FavoriteAdapter adapter;
 
@@ -34,7 +35,7 @@ public class FavoriteFragment extends Fragment {
 
         rvFavorites = view.findViewById(R.id.rvFavorites);
         rvFavorites.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
+        favoriteViewModel = new ViewModelProvider(this).get(FavoriteViewModel.class);
         adapter = new FavoriteAdapter();
         rvFavorites.setAdapter(adapter);
 
@@ -52,14 +53,17 @@ public class FavoriteFragment extends Fragment {
                 }
             }
 
+//            @Override
+//            public void onFavoriteClick(FavoriteMeal meal) {
+//                AsyncTask.execute(() -> {
+//                    if (getContext() != null) {
+//                        MealDatabase.getInstance(getContext()).mealDao().deleteFavorite(meal);
+//                    }
+//                });
+//            }
             @Override
             public void onFavoriteClick(FavoriteMeal meal) {
-                // Sửa lỗi: Gọi .mealDao() thay vì .favoriteMealDao()
-                AsyncTask.execute(() -> {
-                    if (getContext() != null) {
-                        MealDatabase.getInstance(getContext()).mealDao().deleteFavorite(meal);
-                    }
-                });
+                favoriteViewModel.deleteFavorite(meal);
             }
         });
 
@@ -70,7 +74,6 @@ public class FavoriteFragment extends Fragment {
 
     private void loadFavorites() {
         if (getContext() != null) {
-            // Sửa lỗi: Gọi .mealDao() thay vì .favoriteMealDao()
             MealDatabase.getInstance(getContext())
                     .mealDao()
                     .getAllFavorites()

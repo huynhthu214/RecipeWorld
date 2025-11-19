@@ -5,29 +5,34 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.example.recipeworld.data.model.Meal;
 import com.example.recipeworld.data.repository.MealRepository;
 import com.example.recipeworld.data.db.FavoriteMeal;
-
+import androidx.lifecycle.MediatorLiveData;
 import java.util.List;
 
 public class DetailViewModel extends AndroidViewModel {
     private final MealRepository repo;
-    private MutableLiveData<Meal> meal = new MutableLiveData<>();
+    private MediatorLiveData<Meal> mealLiveData = new MediatorLiveData<>();
 
     public DetailViewModel(@NonNull Application application) {
         super(application);
         repo = new MealRepository(application.getApplicationContext());
     }
 
-    public LiveData<Meal> getMeal() { return meal; }
+    public LiveData<Meal> getMeal() { return mealLiveData; }
 
     public void loadDetail(String idMeal) {
-        repo.getMealDetail(idMeal).observeForever(list -> {
-            if (list != null && !list.isEmpty()) meal.setValue(list.get(0));
-            else meal.setValue(null);
+        LiveData<List<Meal>> source = repo.getMealDetail(idMeal);
+
+        mealLiveData.addSource(source, list -> {
+            if (list != null && !list.isEmpty())
+                mealLiveData.setValue(list.get(0));
+            else
+                mealLiveData.setValue(null);
+
+            mealLiveData.removeSource(source);
         });
     }
 
@@ -45,5 +50,6 @@ public class DetailViewModel extends AndroidViewModel {
     }
 
     public void addFavorite(Meal m) {
+        saveFavorite(m);
     }
 }

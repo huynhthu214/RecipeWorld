@@ -96,19 +96,17 @@ public class Meal {
     public void setIdMeal(String id) {
     }
 
-    public void setStrMeal(String name) {
+    public void setStrMeal(String name) { this.name = name; }
+
+    public void setStrMealThumb(String thumb) { this.thumbnail = thumb; }
+    public void setStrYoutube(String youtube) { this.youtubeLink = youtube; }
+    public void setStrInstructions(String instructions) { this.instructions = instructions;}
+
+        public String getStrMeal() {
+        return name;
     }
 
-    public void setStrMealThumb(String thumb) {
-    }
-
-    public void setStrYoutube(String youtube) {
-    }
-
-    public void setStrInstructions(String instructions) {
-    }
-
-    public String getStrMeal() {
-        return "";
+    public String getStrYoutube() {
+        return youtubeLink;
     }
 }

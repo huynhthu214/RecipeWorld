@@ -14,27 +14,21 @@ import android.widget.Toast;
 
 import com.example.recipeworld.R;
 import com.example.recipeworld.data.model.Meal;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
-/**
- * Fragment để hiển thị chi tiết của một món ăn cụ thể.
- * Nó sử dụng DetailFragment (ViewModel) để lấy dữ liệu.
- */
 public class MealDetailFragment extends Fragment {
 
     private static final String ARG_MEAL_ID = "mealId";
-    private DetailFragment detailViewModel; // Đây là ViewModel (DetailFragment đã có)
+    private DetailFragment detailViewModel;
     private String mealId;
+    private Meal currentMeal;
 
-    // Ví dụ về các View trong layout (giả định)
     private TextView tvMealName;
     private TextView tvInstructions;
+    private MaterialButton btnWatchVideo;
 
-    /**
-     * Phương thức Static để tạo instance mới của Fragment với ID món ăn.
-     * Đây là phương thức mà FavoriteFragment sẽ gọi.
-     */
     public static MealDetailFragment newInstance(String mealId) {
         MealDetailFragment fragment = new MealDetailFragment();
         Bundle args = new Bundle();
@@ -55,12 +49,24 @@ public class MealDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // Giả định layout chi tiết là fragment_meal_detail
         View view = inflater.inflate(R.layout.fragment_meal_detail, container, false);
 
-        // Khởi tạo Views (Thay thế R.id.tv_name và R.id.tv_instructions bằng ID thực tế của bạn)
         tvMealName = view.findViewById(R.id.tv_meal_name);
         tvInstructions = view.findViewById(R.id.tv_instructions);
+        btnWatchVideo = view.findViewById(R.id.btn_watch_youtube);
+
+        btnWatchVideo.setOnClickListener(v -> {
+            if (currentMeal != null && currentMeal.getStrYoutube() != null) {
+                String youtubeUrl = currentMeal.getStrYoutube();
+                MealVideoFragment videoFragment = MealVideoFragment.newInstance(youtubeUrl);
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.main_activity_container, videoFragment)
+                        .addToBackStack(null)
+                        .commit();
+            } else {
+                Toast.makeText(getContext(), "Video chưa có sẵn", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return view;
     }
@@ -69,30 +75,34 @@ public class MealDetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Khởi tạo ViewModel
         detailViewModel = new ViewModelProvider(this).get(DetailFragment.class);
 
-        // Lấy và quan sát dữ liệu chi tiết món ăn
         if (mealId != null) {
             detailViewModel.getMealDetail(mealId).observe(getViewLifecycleOwner(), this::displayMealDetails);
         } else {
             Toast.makeText(getContext(), "Không tìm thấy ID món ăn.", Toast.LENGTH_SHORT).show();
         }
-
-        // Thêm Listener cho nút Favorite/Unfavorite tại đây (nếu có)
     }
 
-    /**
-     * Phương thức xử lý hiển thị dữ liệu lên UI.
-     */
     private void displayMealDetails(List<Meal> meals) {
         if (meals != null && !meals.isEmpty()) {
-            Meal meal = meals.get(0);
-            tvMealName.setText(meal.getStrMeal());
-            tvInstructions.setText(meal.getInstructions());
-            // TODO: Load ảnh, video YouTube, v.v. tại đây
+            currentMeal = meals.get(0);
+            tvMealName.setText(currentMeal.getStrMeal());
+            tvInstructions.setText(currentMeal.getInstructions());
         } else {
             tvMealName.setText(getString(R.string.meal_not_found));
+        }
+    }
+
+    // Hàm tách YouTube videoId từ link
+    private String extractYoutubeId(String url) {
+        if (url == null) return null;
+        if (url.contains("v=")) {
+            return url.substring(url.indexOf("v=") + 2);
+        } else if (url.contains("youtu.be/")) {
+            return url.substring(url.lastIndexOf("/") + 1);
+        } else {
+            return url; // fallback
         }
     }
 }
