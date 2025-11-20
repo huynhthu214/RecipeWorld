@@ -9,13 +9,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recipeworld.R;
 import com.example.recipeworld.data.api.CategoryResponse;
 import com.example.recipeworld.data.api.RetrofitClient;
-import com.example.recipeworld.ui.category.MealsByCategoryFragment;
 
 import java.util.List;
 
@@ -33,10 +33,10 @@ public class MealFilterFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_meal_filter, container, false);
+        View view = inflater.inflate(R.layout.fragment_all_categories, container, false);
 
-        rvCategory = view.findViewById(R.id.rvMealsByCategory);
-        rvCategory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        rvCategory = view.findViewById(R.id.rvAllCategories);
+        rvCategory.setLayoutManager(new GridLayoutManager(getContext(), 3)); // 3 cột
 
         categoryAdapter = new CategoryAdapter();
         rvCategory.setAdapter(categoryAdapter);
@@ -54,22 +54,22 @@ public class MealFilterFragment extends Fragment {
 
         return view;
     }
-
     private void loadCategories() {
         RetrofitClient.getMealApiService().getCategories()
-                .enqueue(new Callback<CategoryResponse>() {
-                    @Override
-                    public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            List<CategoryResponse.CategoryItem> categories = response.body().getCategories();
-                            categoryAdapter.setCategories(categories);
-                        }
+            .enqueue(new Callback<CategoryResponse>() {
+                @Override
+                public void onResponse(Call<CategoryResponse> call, Response<CategoryResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        List<CategoryResponse.CategoryItem> categories = response.body().getCategories();
+                        categoryAdapter.setCategories(categories, false); // false = show tất cả
                     }
+                }
 
-                    @Override
-                    public void onFailure(Call<CategoryResponse> call, Throwable t) {
-                        Toast.makeText(getContext(), "Lỗi tải danh mục: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                @Override
+                public void onFailure(Call<CategoryResponse> call, Throwable t) {
+                    Toast.makeText(getContext(), "Lỗi tải danh mục: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
     }
+
 }

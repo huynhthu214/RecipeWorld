@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recipeworld.R;
-import com.example.recipeworld.data.model.Meal;
 import com.example.recipeworld.ui.adapter.RecipeAdapter;
 import com.example.recipeworld.ui.detail.MealDetailFragment;
 import com.example.recipeworld.viewmodel.MealViewModel;
@@ -39,7 +38,7 @@ public class MealsByCategoryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_meal_filter, container, false);
+        return inflater.inflate(R.layout.fragment_all_categories, container, false);
     }
 
     @Override
@@ -50,7 +49,7 @@ public class MealsByCategoryFragment extends Fragment {
             categoryName = getArguments().getString(ARG_CATEGORY);
         }
 
-        recyclerView = view.findViewById(R.id.rvMealsByCategory);
+        recyclerView = view.findViewById(R.id.rvAllCategories);
 
         // GridLayoutManager: 2 cột, scroll dọc
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
