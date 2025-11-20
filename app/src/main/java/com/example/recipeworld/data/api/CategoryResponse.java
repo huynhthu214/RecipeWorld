@@ -4,8 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class CategoryResponse {
-    private List<CategoryItem> categories; // CategoryItem chứa strCategory, strCategoryThumb, strCategoryDescription
-
+    private List<CategoryItem> categories;
     public List<CategoryItem> getCategories() { return categories; }
 
     public static class CategoryItem {

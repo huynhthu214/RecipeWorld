@@ -114,13 +114,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private BitmapDrawable createCircularTextDrawable(String text, int textSizeSp) {
-        TextView tv = new TextView(this); // Thay requireContext() bằng this
+        TextView tv = new TextView(this);
         tv.setText(text);
-        tv.setTextColor(Color.BLACK); // chữ màu đen
+        tv.setTextColor(Color.BLACK);
         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSizeSp);
         tv.setGravity(Gravity.CENTER);
 
-        // Background trong suốt
         tv.setBackgroundColor(Color.TRANSPARENT);
 
         tv.measure(TextView.MeasureSpec.UNSPECIFIED, TextView.MeasureSpec.UNSPECIFIED);

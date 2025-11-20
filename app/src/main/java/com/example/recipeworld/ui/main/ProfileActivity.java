@@ -28,7 +28,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         session = new SessionManager(this);
 
-        // Nếu chưa login thì về LoginActivity
         if (!session.isLoggedIn()) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
@@ -38,11 +37,9 @@ public class ProfileActivity extends AppCompatActivity {
         CardView profileImageCard = findViewById(R.id.profileImageCard);
         TextView userEmailTv = findViewById(R.id.userEmail);
 
-        // Back button
         ImageButton backBtn = findViewById(R.id.backButton);
         backBtn.setOnClickListener(v -> finish());
 
-        // Option buttons
         findViewById(R.id.optionEditProfile).setOnClickListener(v ->
                 startActivity(new Intent(ProfileActivity.this, EditProfileActivity.class))
         );
@@ -51,12 +48,11 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(new Intent(ProfileActivity.this, ChangePasswordActivity.class))
         );
 
-        // Favorite -> mở MainActivity và yêu cầu load FavoriteFragment
         findViewById(R.id.optionFavorites).setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-            intent.putExtra("open_favorites", true); // flag cho MainActivity
+            intent.putExtra("open_favorites", true);
             startActivity(intent);
-            finish(); // optional: đóng ProfileActivity
+            finish();
         });
 
         Button logoutBtn = findViewById(R.id.buttonLogout);

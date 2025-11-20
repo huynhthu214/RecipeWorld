@@ -41,15 +41,13 @@ public class LoginActivity extends AppCompatActivity {
 
             new Thread(() -> {
                 AppDatabase db = AppDatabase.getInstance(this);
-                db.userDao().clearUsers(); // Xóa user cũ nếu có
-                User user = new User(email, password); // tạo user mới
+                db.userDao().clearUsers();
+                User user = new User(email, password);
                 db.userDao().insertUser(user);
 
-                // Set logged in
                 session.setLoggedIn(true);
 
                 runOnUiThread(() -> {
-                    // Chuyển sang MainActivity
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);

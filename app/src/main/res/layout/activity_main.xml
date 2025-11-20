@@ -9,7 +9,7 @@
     tools:context=".ui.main.MainActivity"
     android:background="#F5F5F5">
 
-    <!-- TOOLBAR ĐÃ CHỈNH SỬA CHIỀU CAO (80dp) -->
+    <!-- TOOLBAR -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/app_toolbar"
         android:layout_width="0dp"

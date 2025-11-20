@@ -18,7 +18,6 @@ public class FavoriteViewModel extends AndroidViewModel {
 
     public FavoriteViewModel(@NonNull Application application) {
         super(application);
-        // LẤY ĐÚNG DAO (FavoriteMealDao)
         mealDao = MealDatabase.getInstance(application).mealDao();
     }
 

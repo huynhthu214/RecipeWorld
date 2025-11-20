@@ -61,7 +61,6 @@ public class MealDetailFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_meal_detail, container, false);
 
-        // Bind views
         tvMealName      = view.findViewById(R.id.tv_meal_name);
         tvInstructions  = view.findViewById(R.id.tv_instructions);
         ivMealThumbnail = view.findViewById(R.id.iv_meal_thumbnail);
@@ -95,11 +94,9 @@ public class MealDetailFragment extends Fragment {
         }
     }
 
-    /** ============================
-     *  LOAD CHI TIẾT MÓN ĂN TỪ ROOM/ONLINE
-     *  ============================ */
+    /**LOAD CHI TIẾT MÓN ĂN TỪ ROOM/ONLINE*/
     private void loadMealDetail(String mealId) {
-        // 1. Kiểm tra Room trước
+        // 1. Kiểm tra Room
         MealDatabase.getInstance(requireContext())
                 .mealDao()
                 .getFavoriteByIdLive(mealId)
@@ -132,9 +129,7 @@ public class MealDetailFragment extends Fragment {
                 });
     }
 
-    /** ============================
-     *  HIỂN THỊ MÓN ĂN LÊN UI
-     *  ============================ */
+    /* HIỂN THỊ MÓN ĂN*/
     private void displayMeal(Meal meal) {
         tvMealName.setText(meal.getStrMeal());
         tvInstructions.setText(meal.getInstructions());
@@ -148,9 +143,7 @@ public class MealDetailFragment extends Fragment {
         }
     }
 
-    /** ============================
-     *  MỞ VIDEO YOUTUBE
-     *  ============================ */
+    /* MỞ VIDEO YOUTUBE */
     private void openYoutubeVideo() {
         if (currentMeal == null || currentMeal.getStrYoutube() == null) {
             Toast.makeText(requireContext(), "Video chưa có sẵn", Toast.LENGTH_SHORT).show();
@@ -169,9 +162,7 @@ public class MealDetailFragment extends Fragment {
                 .commit();
     }
 
-    /** ============================
-     *  TOGGLE FAVORITE
-     *  ============================ */
+    /*  TOGGLE FAVORITE */
     private void toggleFavorite() {
         if (currentMeal == null) return;
 
@@ -197,9 +188,7 @@ public class MealDetailFragment extends Fragment {
                 });
     }
 
-    /** ============================
-     *  CẬP NHẬT ICON YÊU THÍCH
-     *  ============================ */
+    /* CẬP NHẬT ICON YÊU THÍCH */
     private void updateFavoriteIcon() {
         if (currentMeal == null) return;
 

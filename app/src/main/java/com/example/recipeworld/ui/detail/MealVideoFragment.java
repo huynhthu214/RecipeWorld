@@ -48,7 +48,6 @@ public class MealVideoFragment extends Fragment {
         ImageButton btnBack = view.findViewById(R.id.btn_back);
         btnBack.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
-        // Tách videoId từ link API
         String videoId = extractVideoId(youtubeUrl);
         youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
@@ -64,9 +63,8 @@ public class MealVideoFragment extends Fragment {
         if (url == null || url.isEmpty()) return "";
         String[] parts = url.split("v=");
         if (parts.length > 1) {
-            return parts[1].split("&")[0]; // cái này quan trọng nhất: bỏ &xxx phía sau
+            return parts[1].split("&")[0];
         }
-        // nếu là youtu.be/xxxx
         if (url.contains("youtu.be/")) {
             return url.substring(url.lastIndexOf("/") + 1).split("\\?")[0];
         }

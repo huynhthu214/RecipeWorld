@@ -42,7 +42,7 @@ public class EditProfileActivity extends AppCompatActivity {
         btnSaveProfile = findViewById(R.id.btnSaveProfile);
         ImageButton backBtn = findViewById(R.id.backButton);
         backBtn.setOnClickListener(v -> finish());
-        // Load user trong background thread
+
         new Thread(() -> {
             currentUser = AppDatabase.getInstance(EditProfileActivity.this)
                     .userDao().getCurrentUser();
@@ -81,7 +81,6 @@ public class EditProfileActivity extends AppCompatActivity {
         });
         TextInputLayout passwordLayout = findViewById(R.id.passwordLayout);
         passwordLayout.setEndIconOnClickListener(v -> {
-            // mở activity đổi mật khẩu
             startActivity(new Intent(EditProfileActivity.this, ChangePasswordActivity.class));
         });
 

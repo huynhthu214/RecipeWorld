@@ -87,7 +87,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         Toast.makeText(ChangePasswordActivity.this,
                                 "Password changed",
                                 Toast.LENGTH_SHORT).show();
-                        finish(); // quay lại ProfileActivity
+                        finish();
                     });
                 }
             }).start();

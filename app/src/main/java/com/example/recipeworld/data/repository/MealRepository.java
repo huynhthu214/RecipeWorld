@@ -24,7 +24,7 @@ import retrofit2.Response;
 public class MealRepository {
 
     private final MealApiService api;
-    private final FavoriteMealDao favoriteDao;  // ← chỉ dao yêu thích
+    private final FavoriteMealDao favoriteDao;
     private final Executor executor = Executors.newSingleThreadExecutor();
 
     public MealRepository(Context context) {
@@ -32,7 +32,7 @@ public class MealRepository {
         favoriteDao = MealDatabase.getInstance(context).mealDao();
     }
 
-    // ===================== API =====================
+    //  API
 
     public LiveData<List<Meal>> getMealsByIngredient(String ingredient) {
         MutableLiveData<List<Meal>> result = new MutableLiveData<>();
@@ -76,7 +76,7 @@ public class MealRepository {
         return result;
     }
 
-    // ===================== ROOM =====================
+    //  ROOM
 
     public LiveData<List<FavoriteMeal>> getAllFavorites() {
         return favoriteDao.getAllFavorites();
