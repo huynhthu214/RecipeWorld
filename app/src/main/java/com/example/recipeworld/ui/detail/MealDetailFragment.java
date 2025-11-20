@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.recipeworld.R;
 import com.example.recipeworld.data.db.FavoriteMeal;
+import com.example.recipeworld.data.db.MealDatabase;
 import com.example.recipeworld.data.model.Meal;
 import com.example.recipeworld.ui.favorites.FavoriteViewModel;
 import com.example.recipeworld.viewmodel.DetailViewModel;
@@ -90,29 +91,61 @@ public class MealDetailFragment extends Fragment {
         favoriteViewModel = new ViewModelProvider(this).get(FavoriteViewModel.class);
 
         if (mealId != null) {
-            detailViewModel.loadDetail(mealId);
+            loadMealDetail(mealId);
         }
+    }
 
-        // Observe chi tiết món
-        detailViewModel.getMeal().observe(getViewLifecycleOwner(), meal -> {
-            if (meal == null) return;
+    /** ============================
+     *  LOAD CHI TIẾT MÓN ĂN TỪ ROOM/ONLINE
+     *  ============================ */
+    private void loadMealDetail(String mealId) {
+        // 1. Kiểm tra Room trước
+        MealDatabase.getInstance(requireContext())
+                .mealDao()
+                .getFavoriteByIdLive(mealId)
+                .observe(getViewLifecycleOwner(), favoriteMeal -> {
+                    if (favoriteMeal != null) {
+                        // Load từ Room (offline)
+                        Meal meal = new Meal();
+                        meal.setIdMeal(favoriteMeal.getIdMeal());
+                        meal.setStrMeal(favoriteMeal.getStrMeal());
+                        meal.setStrMealThumb(favoriteMeal.getStrMealThumb());
+                        meal.setStrYoutube(favoriteMeal.getYoutube());
+                        meal.setStrInstructions(favoriteMeal.getInstructions());
+                        currentMeal = meal;
 
-            currentMeal = meal;
+                        displayMeal(currentMeal);
 
-            tvMealName.setText(meal.getStrMeal());
-            tvInstructions.setText(meal.getInstructions());
+                    } else {
+                        // Load từ API
+                        detailViewModel.loadDetail(mealId);
+                        detailViewModel.getMeal().observe(getViewLifecycleOwner(), meal -> {
+                            if (meal != null) {
+                                currentMeal = meal;
+                                displayMeal(meal);
+                            }
+                        });
+                    }
 
-            // Load ảnh an toàn
-            String thumb = meal.getThumbnail();
-            if (thumb != null && !thumb.trim().isEmpty() && !"null".equalsIgnoreCase(thumb)) {
-                Glide.with(MealDetailFragment.this)
-                        .load(thumb)
-                        .centerCrop()
-                        .into(ivMealThumbnail);
-            }
+                    // Cập nhật icon yêu thích
+                    updateFavoriteIcon();
+                });
+    }
 
-            updateFavoriteIcon();
-        });
+    /** ============================
+     *  HIỂN THỊ MÓN ĂN LÊN UI
+     *  ============================ */
+    private void displayMeal(Meal meal) {
+        tvMealName.setText(meal.getStrMeal());
+        tvInstructions.setText(meal.getInstructions());
+
+        String thumb = meal.getThumbnail();
+        if (thumb != null && !thumb.trim().isEmpty() && !"null".equalsIgnoreCase(thumb)) {
+            Glide.with(this)
+                    .load(thumb)
+                    .centerCrop()
+                    .into(ivMealThumbnail);
+        }
     }
 
     /** ============================
@@ -137,7 +170,7 @@ public class MealDetailFragment extends Fragment {
     }
 
     /** ============================
-     *  THÊM/XÓA YÊU THÍCH
+     *  TOGGLE FAVORITE
      *  ============================ */
     private void toggleFavorite() {
         if (currentMeal == null) return;
@@ -164,7 +197,6 @@ public class MealDetailFragment extends Fragment {
                 });
     }
 
-
     /** ============================
      *  CẬP NHẬT ICON YÊU THÍCH
      *  ============================ */
@@ -172,15 +204,13 @@ public class MealDetailFragment extends Fragment {
         if (currentMeal == null) return;
 
         favoriteViewModel.getFavoriteById(currentMeal.getIdMeal())
-            .observe(getViewLifecycleOwner(), favorite -> {
-                if (favorite != null) {
-                    btnSaveFavorite.setImageResource(R.drawable.ic_favorite_filled);
-                    Toast.makeText(requireContext(), "Món đang ở yêu thích", Toast.LENGTH_SHORT).show();
-                } else {
-                    btnSaveFavorite.setImageResource(R.drawable.ic_favorite);
-                    Toast.makeText(requireContext(), "Món chưa được yêu thích", Toast.LENGTH_SHORT).show();
-                }
-            });
+                .observe(getViewLifecycleOwner(), favorite -> {
+                    if (favorite != null) {
+                        btnSaveFavorite.setImageResource(R.drawable.ic_favorite_filled);
+                    } else {
+                        btnSaveFavorite.setImageResource(R.drawable.ic_favorite);
+                    }
+                });
     }
 
 }

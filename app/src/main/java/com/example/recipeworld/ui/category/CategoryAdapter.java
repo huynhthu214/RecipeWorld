@@ -29,8 +29,26 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         this.listener = listener;
     }
 
-    public void setCategories(List<CategoryResponse.CategoryItem> categories) {
-        this.categories = categories != null ? categories : new ArrayList<>();
+    // Chuyển list category, thêm ô "More" nếu muốn
+    public void setCategories(List<CategoryResponse.CategoryItem> categories, boolean addMoreItem) {
+        List<CategoryResponse.CategoryItem> displayList = new ArrayList<>();
+        if (categories != null) {
+            int count = addMoreItem ? Math.min(5, categories.size()) : categories.size();
+            displayList.addAll(categories.subList(0, count));
+        }
+
+        if (addMoreItem) {
+            // tạo ô More
+            CategoryResponse.CategoryItem moreItem = new CategoryResponse.CategoryItem() {
+                @Override
+                public String getStrCategory() { return "..."; }
+                @Override
+                public String getStrCategoryThumb() { return ""; }
+            };
+            displayList.add(moreItem);
+        }
+
+        this.categories = displayList;
         notifyDataSetChanged();
     }
 
@@ -45,12 +63,17 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         CategoryResponse.CategoryItem category = categories.get(position);
-        holder.tvName.setText(category.getStrCategory());
 
-        Glide.with(holder.itemView.getContext())
-                .load(category.getStrCategoryThumb())
-                .placeholder(R.drawable.ic_recipe_placeholder)
-                .into(holder.imgThumb);
+        if ("...".equals(category.getStrCategory())) {
+            holder.tvName.setText("More");
+            holder.imgThumb.setImageResource(R.drawable.ic_more);
+        } else {
+            holder.tvName.setText(category.getStrCategory());
+            Glide.with(holder.itemView.getContext())
+                    .load(category.getStrCategoryThumb())
+                    .placeholder(R.drawable.ic_recipe_placeholder)
+                    .into(holder.imgThumb);
+        }
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onItemClick(category);

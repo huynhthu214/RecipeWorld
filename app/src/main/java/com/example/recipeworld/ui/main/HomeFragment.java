@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +24,7 @@ import com.example.recipeworld.data.api.RetrofitClient;
 import com.example.recipeworld.data.db.SessionManager;
 import com.example.recipeworld.data.model.Meal;
 import com.example.recipeworld.ui.adapter.RecipeAdapter;
+import com.example.recipeworld.ui.category.AllCategoriesFragment;
 import com.example.recipeworld.ui.category.CategoryAdapter;
 import com.example.recipeworld.ui.category.MealsByCategoryFragment;
 import com.example.recipeworld.ui.detail.MealDetailFragment;
@@ -64,35 +66,38 @@ public class HomeFragment extends Fragment {
             }
         });
         rvCategories = view.findViewById(R.id.rvCategories);
-        LinearLayoutManager horizontalLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
-        rvCategories.setLayoutManager(horizontalLayout);
+        rvCategories.setLayoutManager(new GridLayoutManager(getContext(), 3)); // 3 cột
 
         categoryAdapter = new CategoryAdapter();
         rvCategories.setAdapter(categoryAdapter);
 
         categoryAdapter.setOnItemClickListener(category -> {
-            MealsByCategoryFragment fragment = MealsByCategoryFragment.newInstance(category.getStrCategory());
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.main_activity_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
+            if ("...".equals(category.getStrCategory())) {
+                AllCategoriesFragment fragment = new AllCategoriesFragment();
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.main_activity_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            } else {
+                MealsByCategoryFragment fragment = MealsByCategoryFragment.newInstance(category.getStrCategory());
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.main_activity_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
+
         RetrofitClient.getMealApiService().getCategories().enqueue(new retrofit2.Callback<CategoryResponse>() {
             @Override
             public void onResponse(retrofit2.Call<CategoryResponse> call, retrofit2.Response<CategoryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<CategoryResponse.CategoryItem> allCategories = response.body().getCategories();
-                    List<CategoryResponse.CategoryItem> first8 = allCategories.size() > 8
-                            ? allCategories.subList(0, 8)
-                            : allCategories;
-
-                    categoryAdapter.setCategories(first8);
+                    categoryAdapter.setCategories(allCategories, true); // addMoreItem = true
                 }
             }
 
             @Override
             public void onFailure(retrofit2.Call<CategoryResponse> call, Throwable t) {
-                // Xử lý lỗi
             }
         });
 
