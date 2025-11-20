@@ -7,17 +7,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.main.MainActivity"
-    android:background="#F5F5F5"> <androidx.appcompat.widget.Toolbar
-    android:id="@+id/app_toolbar"
-    android:layout_width="0dp"
-    android.layout_height="?attr/actionBarSize"
-    android:background="#F77D00"
-    android:elevation="4dp"
-    app:title="Recipe World"
-    app:titleTextColor="@android:color/white"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"  android:layout_height="10dp"/>
+    android:background="#F5F5F5">
+
+    <!-- TOOLBAR ĐÃ CHỈNH SỬA CHIỀU CAO (80dp) -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/app_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="10dp"
+        android:background="@drawable/bg_circle_white_translucent"
+        android:elevation="4dp"
+        app:title="Recipe World"
+        app:titleTextColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- CONTENT CỦA BẠN (Đặt ở đây) -->
 
     <LinearLayout
         android:id="@+id/bottom_navigation_bar"
@@ -28,6 +33,7 @@
         android:paddingBottom="12dp"
         android:background="@android:color/white"
         android:elevation="10dp"
+        android:backgroundTint="#F77D00"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -43,8 +49,8 @@
             <ImageButton
                 android:id="@+id/btn_home"
                 style="@style/CookpadBottomNavButton"
-                android:src="@drawable/ic_home_orange_selector"
-                android:contentDescription="Trang Chủ" />
+                android:contentDescription="Trang Chủ"
+                android:src="@drawable/ic_home" />
 
             <ImageButton
                 android:id="@+id/btn_favorite"
@@ -61,7 +67,7 @@
             <ImageButton
                 android:id="@+id/btn_profile"
                 style="@style/CookpadBottomNavButton"
-                android:src="@drawable/ic_profile"
+                android:src="@drawable/ic_account"
                 android:contentDescription="Trang Cá Nhân" />
         </LinearLayout>
     </LinearLayout>

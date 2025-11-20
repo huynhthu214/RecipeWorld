@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -15,77 +16,74 @@ import com.example.recipeworld.R;
 import com.example.recipeworld.data.db.AppDatabase;
 import com.example.recipeworld.data.db.SessionManager;
 import com.example.recipeworld.data.db.User;
-import com.example.recipeworld.ui.favorites.FavoriteFragment;
+import com.google.android.material.textfield.TextInputLayout;
 
-public class ProfileActivity extends AppCompatActivity {
+public class EditProfileActivity extends AppCompatActivity {
 
+    private EditText etMail;
+    private Button btnSaveProfile;
     private SessionManager session;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.user_profile);
+        setContentView(R.layout.edit_profile);
 
         session = new SessionManager(this);
-
-        // Nếu chưa login thì về LoginActivity
         if (!session.isLoggedIn()) {
-            startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
 
         CardView profileImageCard = findViewById(R.id.profileImageCard);
-        TextView userEmailTv = findViewById(R.id.userEmail);
-
-        // Back button
+        TextView userNameTv = findViewById(R.id.userName);
+        etMail = findViewById(R.id.etMail);
+        btnSaveProfile = findViewById(R.id.btnSaveProfile);
         ImageButton backBtn = findViewById(R.id.backButton);
         backBtn.setOnClickListener(v -> finish());
-
-        // Option buttons
-        findViewById(R.id.optionEditProfile).setOnClickListener(v ->
-                startActivity(new Intent(ProfileActivity.this, EditProfileActivity.class))
-        );
-
-        findViewById(R.id.optionNotifications).setOnClickListener(v ->
-                startActivity(new Intent(ProfileActivity.this, ChangePasswordActivity.class))
-        );
-
-        // Favorite -> mở MainActivity và yêu cầu load FavoriteFragment
-        findViewById(R.id.optionFavorites).setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-            intent.putExtra("open_favorites", true); // flag cho MainActivity
-            startActivity(intent);
-            finish(); // optional: đóng ProfileActivity
-        });
-
-        Button logoutBtn = findViewById(R.id.buttonLogout);
-        logoutBtn.setOnClickListener(v -> {
-            session.resetLogin();
-            startActivity(new Intent(ProfileActivity.this, LoginActivity.class)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-            finish();
-        });
-
         // Load user trong background thread
         new Thread(() -> {
-            User currentUser = AppDatabase.getInstance(this).userDao().getCurrentUser();
+            currentUser = AppDatabase.getInstance(EditProfileActivity.this)
+                    .userDao().getCurrentUser();
             if (currentUser != null) {
                 runOnUiThread(() -> {
-                    userEmailTv.setText(currentUser.email);
+                    userNameTv.setText(currentUser.email);
+                    etMail.setText(currentUser.email);
 
-                    // Avatar chữ cái đầu
                     TextView avatarTv = new TextView(this);
                     avatarTv.setText(currentUser.email.substring(0, 1).toUpperCase());
                     avatarTv.setTextColor(Color.WHITE);
                     avatarTv.setTextSize(36f);
                     avatarTv.setGravity(Gravity.CENTER);
                     avatarTv.setBackgroundResource(R.drawable.circle_bg_purple);
-
                     profileImageCard.removeAllViews();
                     profileImageCard.addView(avatarTv);
                 });
             }
         }).start();
+
+        btnSaveProfile.setOnClickListener(v -> {
+            String newMail = etMail.getText().toString().trim();
+            if (newMail.isEmpty()) return;
+
+            new Thread(() -> {
+                User user = AppDatabase.getInstance(EditProfileActivity.this)
+                        .userDao().getCurrentUser();
+                if (user != null) {
+                    user.email = newMail;
+                    AppDatabase.getInstance(EditProfileActivity.this)
+                            .userDao().updateUser(user);
+
+                    runOnUiThread(EditProfileActivity.this::finish); // quay lại ProfileActivity
+                }
+            }).start();
+        });
+        TextInputLayout passwordLayout = findViewById(R.id.passwordLayout);
+        passwordLayout.setEndIconOnClickListener(v -> {
+            // mở activity đổi mật khẩu
+            startActivity(new Intent(EditProfileActivity.this, ChangePasswordActivity.class));
+        });
+
     }
 }

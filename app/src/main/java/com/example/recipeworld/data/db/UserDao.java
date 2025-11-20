@@ -1,0 +1,25 @@
+package com.example.recipeworld.data.db;
+
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.Query;
+import androidx.room.Update;
+
+@Dao
+public interface UserDao {
+
+    @Insert
+    void insertUser(User user);
+
+    @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
+    User getUserByEmail(String email);
+
+    @Query("SELECT * FROM users LIMIT 1")
+    User getCurrentUser();
+
+    @Update
+    void updateUser(User user);
+
+    @Query("DELETE FROM users")
+    void clearUsers();
+}

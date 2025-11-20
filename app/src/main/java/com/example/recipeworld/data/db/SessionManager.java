@@ -5,29 +5,24 @@ import android.content.SharedPreferences;
 
 public class SessionManager {
 
-    private static final String PREF_NAME = "recipe_session";
-    private static final String KEY_IS_LOGGED_IN = "is_logged_in";
+    private static final String PREFS_NAME = "session_prefs";
+    private static final String KEY_LOGGED_IN = "is_logged_in";
 
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
+    private final SharedPreferences prefs;
 
     public SessionManager(Context context) {
-        pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        editor = pref.edit();
+        prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
-    public void setLogin(boolean isLoggedIn) {
-        editor.putBoolean(KEY_IS_LOGGED_IN, isLoggedIn);
-        editor.apply();
+    public void setLoggedIn(boolean loggedIn) {
+        prefs.edit().putBoolean(KEY_LOGGED_IN, loggedIn).apply();
     }
 
     public boolean isLoggedIn() {
-        return pref.getBoolean(KEY_IS_LOGGED_IN, false);
+        return prefs.getBoolean(KEY_LOGGED_IN, false);
     }
 
-    // Reset login trạng thái khi app start (tắt máy ảo hoặc app)
     public void resetLogin() {
-        editor.clear();
-        editor.apply();
+        setLoggedIn(false);
     }
 }

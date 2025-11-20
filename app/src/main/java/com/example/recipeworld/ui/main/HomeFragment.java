@@ -49,17 +49,8 @@ public class HomeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = view.findViewById(R.id.rvMeals);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext())); // Cuộn dọc
-        ImageView profileIcon = view.findViewById(R.id.img_profile_icon);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        profileIcon.setOnClickListener(v -> {
-            SessionManager session = new SessionManager(requireContext());
-            if (session.isLoggedIn()) {
-                startActivity(new Intent(requireContext(), ProfileActivity.class));
-            } else {
-                startActivity(new Intent(requireContext(), LoginActivity.class));
-            }
-        });
         adapter = new RecipeAdapter(getContext(), new RecipeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Meal meal) {

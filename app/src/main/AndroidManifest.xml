@@ -17,25 +17,32 @@
 
         <!-- MAIN ACTIVITY -->
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".ui.main.SplashActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="false" />
         <!-- LOGIN ACTIVITY -->
         <activity
             android:name=".ui.main.LoginActivity"
             android:exported="false" />
 
-        <!-- PROFILE ACTIVITY nếu bạn có dùng -->
+        <!-- PROFILE ACTIVITY -->
         <activity
             android:name=".ui.main.ProfileActivity"
             android:exported="false" />
 
+        <activity android:name=".ui.main.EditProfileActivity"
+            android:exported="false"/>
+
+        <activity android:name=".ui.main.ChangePasswordActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>
