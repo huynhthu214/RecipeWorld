@@ -1,13 +1,10 @@
 package com.example.recipeworld.ui.main;
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -19,9 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recipeworld.R;
 import com.example.recipeworld.data.api.CategoryResponse;
-import com.example.recipeworld.data.api.MealApiService;
 import com.example.recipeworld.data.api.RetrofitClient;
-import com.example.recipeworld.data.db.SessionManager;
 import com.example.recipeworld.data.model.Meal;
 import com.example.recipeworld.ui.adapter.RecipeAdapter;
 import com.example.recipeworld.ui.category.AllCategoriesFragment;
@@ -36,10 +31,11 @@ public class HomeFragment extends Fragment {
 
     private MealViewModel viewModel;
     private RecipeAdapter adapter;
-    private RecyclerView recyclerView;
-    private SearchView searchView;
+    private RecyclerView rvMeals;
     private RecyclerView rvCategories;
+    private SearchView searchView;
     private CategoryAdapter categoryAdapter;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,23 +46,24 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.rvMeals);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvMeals = view.findViewById(R.id.rvMeals);
+        rvMeals.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvMeals.setNestedScrollingEnabled(false); // Disable nested scroll
 
-        adapter = new RecipeAdapter(getContext(), new RecipeAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Meal meal) {
-                if (meal.getIdMeal() != null) {
-                    MealDetailFragment fragment = MealDetailFragment.newInstance(meal.getIdMeal());
-                    getParentFragmentManager().beginTransaction()
-                            .replace(R.id.main_activity_container, fragment)
-                            .addToBackStack(null)
-                            .commit();
-                }
+        adapter = new RecipeAdapter(getContext(), meal -> {
+            if (meal.getIdMeal() != null) {
+                MealDetailFragment fragment = MealDetailFragment.newInstance(meal.getIdMeal());
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.main_activity_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
+        rvMeals.setAdapter(adapter);
+
         rvCategories = view.findViewById(R.id.rvCategories);
-        rvCategories.setLayoutManager(new GridLayoutManager(getContext(), 3)); // 3 cột
+        rvCategories.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        rvCategories.setNestedScrollingEnabled(false); // Disable nested scroll
 
         categoryAdapter = new CategoryAdapter();
         rvCategories.setAdapter(categoryAdapter);
@@ -87,22 +84,19 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        // Load categories từ API
         RetrofitClient.getMealApiService().getCategories().enqueue(new retrofit2.Callback<CategoryResponse>() {
             @Override
             public void onResponse(retrofit2.Call<CategoryResponse> call, retrofit2.Response<CategoryResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     List<CategoryResponse.CategoryItem> allCategories = response.body().getCategories();
-                    categoryAdapter.setCategories(allCategories, true); // addMoreItem = true
+                    categoryAdapter.setCategories(allCategories, true);
                 }
             }
 
             @Override
-            public void onFailure(retrofit2.Call<CategoryResponse> call, Throwable t) {
-            }
+            public void onFailure(retrofit2.Call<CategoryResponse> call, Throwable t) {}
         });
-
-
-        recyclerView.setAdapter(adapter);
 
         viewModel = new ViewModelProvider(this).get(MealViewModel.class);
 
@@ -110,12 +104,10 @@ public class HomeFragment extends Fragment {
             if (meals != null) adapter.submitList(meals);
         });
 
-        // Load mặc định món ăn "chicken"
+        // Load mặc định món "chicken"
         viewModel.loadMealsByIngredient("chicken");
 
         searchView = view.findViewById(R.id.searchView);
-
-        // Xử lý realtime + submit
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -136,4 +128,3 @@ public class HomeFragment extends Fragment {
         });
     }
 }
-
