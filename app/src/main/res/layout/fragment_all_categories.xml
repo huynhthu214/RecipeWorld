@@ -1,27 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
-    android:layout_marginBottom="5dp"
-    android:background="@android:color/white">
+    android:background="#F5F5F5">
 
-    <TextView
-        android:id="@+id/tv_category_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dish List"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="#F77D00"
-        android:paddingBottom="8dp"/>
+    <!-- Toolbar giống fragment_favorites -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"
+        android:backgroundTint="#F77D00"
+        android:elevation="2dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="Dish List"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- RecyclerView chiếm hết phần còn lại -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAllCategories"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scrollbars="vertical"/>
+        android:layout_height="match_parent"
+        android:padding="4dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"/>
 </LinearLayout>

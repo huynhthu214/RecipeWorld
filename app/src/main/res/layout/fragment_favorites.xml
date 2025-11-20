@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:text="Recipe Saved"
-            android:textColor="#333333"
+            android:textColor="@color/white"
             android:textSize="20sp"
 
             android:textStyle="bold" /> <!-- Căn chỉnh tiêu đề -->
