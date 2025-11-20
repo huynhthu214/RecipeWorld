@@ -197,13 +197,14 @@
             <!-- Tùy chọn 4: Đăng xuất (Button) -->
             <Button
                 android:id="@+id/buttonLogout"
-                android:layout_width="match_parent"
+                android:layout_width="150dp"
                 android:layout_height="56dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="32dp"
+                android:backgroundTint="#FF8C40"
                 android:text="Logout"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
-                android:backgroundTint="#FF8C40"
                 app:cornerRadius="28dp" />
 
         </LinearLayout>
