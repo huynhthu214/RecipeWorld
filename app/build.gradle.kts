@@ -54,6 +54,7 @@ dependencies {
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation(libs.contentpager)
+    implementation(libs.firebase.auth)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     implementation("androidx.room:room-runtime:2.6.1")

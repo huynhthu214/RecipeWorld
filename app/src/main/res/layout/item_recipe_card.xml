@@ -26,19 +26,6 @@
             android:background="@drawable/gradient_bottom_overlay"
             app:layout_constraintHeight_percent="0.5"
             app:layout_constraintBottom_toBottomOf="parent"/>
-        <ImageButton
-            android:id="@+id/btn_favorite"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="@drawable/bg_circle_white_translucent"
-            android:src="@drawable/ic_favorite"
-            android:contentDescription="Nút yêu thích"
-            android:padding="6dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:tint="#F77D00" />
 
         <ImageButton
             android:id="@+id/btn_delete"

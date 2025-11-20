@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -15,18 +14,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RecipeWorld">
-        <activity
-            android:name=".MealVideoFragment"
-            android:exported="false" />
+
+        <!-- MAIN ACTIVITY -->
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- LOGIN ACTIVITY -->
+        <activity
+            android:name=".ui.main.LoginActivity"
+            android:exported="false" />
+
+        <!-- PROFILE ACTIVITY nếu bạn có dùng -->
+        <activity
+            android:name=".ui.main.ProfileActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

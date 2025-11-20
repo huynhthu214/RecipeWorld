@@ -63,7 +63,7 @@
             app:layout_constraintTop_toBottomOf="@id/iv_meal_thumbnail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="Tên Món Ăn Cực Kỳ Chi Tiết" />
+            tools:text="Dish Name" />
 
         <TextView
             android:id="@+id/tv_instructions_title"

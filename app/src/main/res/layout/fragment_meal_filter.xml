@@ -11,7 +11,7 @@
         android:id="@+id/tv_category_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Danh Mục Món Ăn"
+        android:text="Dish List"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="#F77D00"

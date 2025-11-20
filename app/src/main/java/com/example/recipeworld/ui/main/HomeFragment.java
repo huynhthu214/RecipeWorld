@@ -1,10 +1,13 @@
 package com.example.recipeworld.ui.main;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.ImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -14,8 +17,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.recipeworld.R;
+import com.example.recipeworld.data.api.CategoryResponse;
+import com.example.recipeworld.data.api.MealApiService;
+import com.example.recipeworld.data.api.RetrofitClient;
+import com.example.recipeworld.data.db.SessionManager;
 import com.example.recipeworld.data.model.Meal;
 import com.example.recipeworld.ui.adapter.RecipeAdapter;
+import com.example.recipeworld.ui.category.CategoryAdapter;
+import com.example.recipeworld.ui.category.MealsByCategoryFragment;
 import com.example.recipeworld.ui.detail.MealDetailFragment;
 import com.example.recipeworld.viewmodel.MealViewModel;
 
@@ -27,7 +36,8 @@ public class HomeFragment extends Fragment {
     private RecipeAdapter adapter;
     private RecyclerView recyclerView;
     private SearchView searchView;
-
+    private RecyclerView rvCategories;
+    private CategoryAdapter categoryAdapter;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,7 +50,16 @@ public class HomeFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.rvMeals);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext())); // Cuộn dọc
+        ImageView profileIcon = view.findViewById(R.id.img_profile_icon);
 
+        profileIcon.setOnClickListener(v -> {
+            SessionManager session = new SessionManager(requireContext());
+            if (session.isLoggedIn()) {
+                startActivity(new Intent(requireContext(), ProfileActivity.class));
+            } else {
+                startActivity(new Intent(requireContext(), LoginActivity.class));
+            }
+        });
         adapter = new RecipeAdapter(getContext(), new RecipeAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Meal meal) {
@@ -53,6 +72,39 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+        rvCategories = view.findViewById(R.id.rvCategories);
+        LinearLayoutManager horizontalLayout = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        rvCategories.setLayoutManager(horizontalLayout);
+
+        categoryAdapter = new CategoryAdapter();
+        rvCategories.setAdapter(categoryAdapter);
+
+        categoryAdapter.setOnItemClickListener(category -> {
+            MealsByCategoryFragment fragment = MealsByCategoryFragment.newInstance(category.getStrCategory());
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.main_activity_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+        RetrofitClient.getMealApiService().getCategories().enqueue(new retrofit2.Callback<CategoryResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<CategoryResponse> call, retrofit2.Response<CategoryResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    List<CategoryResponse.CategoryItem> allCategories = response.body().getCategories();
+                    List<CategoryResponse.CategoryItem> first8 = allCategories.size() > 8
+                            ? allCategories.subList(0, 8)
+                            : allCategories;
+
+                    categoryAdapter.setCategories(first8);
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<CategoryResponse> call, Throwable t) {
+                // Xử lý lỗi
+            }
+        });
+
 
         recyclerView.setAdapter(adapter);
 
@@ -88,3 +140,4 @@ public class HomeFragment extends Fragment {
         });
     }
 }
+

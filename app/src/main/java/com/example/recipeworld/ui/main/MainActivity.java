@@ -1,5 +1,6 @@
 package com.example.recipeworld.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 
@@ -9,34 +10,52 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.recipeworld.R;
+import com.example.recipeworld.data.db.SessionManager;
 import com.example.recipeworld.ui.category.MealFilterFragment;
 import com.example.recipeworld.ui.favorites.FavoriteFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     private ImageButton btnHome, btnFavorite, btnAdd, btnGrid, btnProfile;
-
+    private SessionManager session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        session = new SessionManager(this);
+        //session.resetLogin();
 
-        // Bind bottom nav buttons
         btnHome = findViewById(R.id.btn_home);
         btnFavorite = findViewById(R.id.btn_favorite);
         btnGrid = findViewById(R.id.btn_categories);
         btnProfile = findViewById(R.id.btn_profile);
+        boolean openFavorites = getIntent().getBooleanExtra("open_favorites", false);
 
-        // Load mặc định HomeFragment
         if (savedInstanceState == null) {
-            loadFragment(new HomeFragment(), false);
+            if (openFavorites && session.isLoggedIn()) {
+                loadFragment(new com.example.recipeworld.ui.favorites.FavoriteFragment(), false);
+            } else {
+                loadFragment(new HomeFragment(), false);
+            }
         }
 
-        // Button listeners
         btnHome.setOnClickListener(v -> loadFragment(new HomeFragment(), false));
-        btnFavorite.setOnClickListener(v -> loadFragment(new FavoriteFragment(), false));
-        btnGrid.setOnClickListener(v -> loadFragment(new MealFilterFragment(), false));// placeholder
-//        btnProfile.setOnClickListener(v -> loadFragment(new ProfileFragment(), false));
+        btnFavorite.setOnClickListener(v -> {
+            if (session.isLoggedIn()) {
+                loadFragment(new FavoriteFragment(), false);
+            } else {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            }
+        });
+        btnGrid.setOnClickListener(v -> loadFragment(new MealFilterFragment(), false));
+
+        btnProfile.setOnClickListener(v -> {
+            if (session.isLoggedIn()) {
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+            } else {
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+            }
+        });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -65,12 +84,8 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-        // Luôn replace fragment, không check tag
         ft.replace(R.id.main_activity_container, fragment, fragment.getClass().getName());
         ft.commit();
     }
 
-    /**
-     * Override onBackPressed để xử lý back stack chuẩn
-     */
 }
