@@ -26,5 +26,9 @@ public interface FavoriteMealDao {
 
     @Query("SELECT * FROM favorite_meals ORDER BY uid DESC")
     LiveData<List<FavoriteMeal>> getAllFavorites();
+
+    @Query("SELECT * FROM favorite_meals WHERE idMeal = :id LIMIT 1")
+    FavoriteMeal getFavoriteSync(String id);
+
 }
 

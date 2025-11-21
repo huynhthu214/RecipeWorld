@@ -36,4 +36,9 @@ public class FavoriteViewModel extends AndroidViewModel {
     public LiveData<FavoriteMeal> getFavoriteById(String idMeal) {
         return mealDao.getFavoriteById(idMeal);
     }
+
+    public FavoriteMeal getFavoriteSync(String id) {
+        return mealDao.getFavoriteSync(id);
+    }
+
 }
