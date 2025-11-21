@@ -1,4 +1,4 @@
-package com.example.recipeworld.data.db;
+package com.example.recipeworld.data.model;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

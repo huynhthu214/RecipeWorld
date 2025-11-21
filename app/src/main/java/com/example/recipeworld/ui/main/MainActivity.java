@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -21,7 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.recipeworld.R;
 import com.example.recipeworld.data.db.AppDatabase;
 import com.example.recipeworld.data.db.SessionManager;
-import com.example.recipeworld.data.db.User;
+import com.example.recipeworld.data.model.User;
 import com.example.recipeworld.ui.category.MealFilterFragment;
 import com.example.recipeworld.ui.favorites.FavoriteFragment;
 
