@@ -24,4 +24,6 @@ public interface UserDao {
 
     @Query("DELETE FROM users")
     void clearUsers();
+    @Query("SELECT * FROM users WHERE id = :id LIMIT 1")
+    User getUserById(int id);
 }

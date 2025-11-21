@@ -98,12 +98,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateProfileButton() {
         if (session.isLoggedIn()) {
+            int userId = session.getLoggedInUserId();
+
             new Thread(() -> {
                 AppDatabase db = AppDatabase.getInstance(this);
-                User user = db.userDao().getCurrentUser();
+                User user = db.userDao().getUserById(userId); // lấy đúng user hiện tại
+
                 if (user != null && user.email != null && !user.email.isEmpty()) {
                     String firstLetter = user.email.substring(0, 1).toUpperCase();
+
                     runOnUiThread(() -> btnProfile.setImageDrawable(createCircularTextDrawable(firstLetter, 32)));
+                } else {
+                    runOnUiThread(() -> btnProfile.setImageResource(R.drawable.ic_account));
                 }
             }).start();
         } else {

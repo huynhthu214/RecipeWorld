@@ -132,33 +132,30 @@ public class MealDetailFragment extends Fragment {
 
     private void toggleFavorite() {
         int userId = new SessionManager(requireContext()).getLoggedInUserId();
-        if (userId == -1 || currentMeal == null || currentMeal.getIdMeal() == null) {
-            Toast.makeText(requireContext(), "Vui lòng đăng nhập để lưu món yêu thích", Toast.LENGTH_SHORT).show();
+        if (userId == -1 || currentMeal == null) {
+            Toast.makeText(getContext(), "Vui lòng đăng nhập", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Kiểm tra xem món đã yêu thích chưa
-        detailViewModel.getFavoriteById(currentMeal.getIdMeal()).observe(getViewLifecycleOwner(), favoriteMeal -> {
-            if (favoriteMeal != null) {
-                // Xóa khỏi favorite
-                detailViewModel.deleteFavorite(favoriteMeal);
+        new Thread(() -> {
+            FavoriteMeal existing = detailViewModel.checkFavorite(userId, currentMeal.getIdMeal());
 
-                btnSaveFavorite.setImageResource(R.drawable.ic_favorite);
-                Toast.makeText(requireContext(), "Đã xóa khỏi yêu thích", Toast.LENGTH_SHORT).show();
-
-                // Chuyển về FavoriteFragment
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.main_activity_container, new FavoriteFragment())
-                        .commit();
-
+            if (existing != null) {
+                detailViewModel.deleteFavorite(existing);
+                requireActivity().runOnUiThread(() -> {
+                    btnSaveFavorite.setImageResource(R.drawable.ic_favorite);
+                    Toast.makeText(getContext(), "Đã xóa khỏi yêu thích", Toast.LENGTH_SHORT).show();
+                });
             } else {
-                // Thêm vào favorite
                 detailViewModel.toggleFavorite(currentMeal);
-                btnSaveFavorite.setImageResource(R.drawable.ic_favorite_filled);
-                Toast.makeText(requireContext(), "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
+                requireActivity().runOnUiThread(() -> {
+                    btnSaveFavorite.setImageResource(R.drawable.ic_favorite_filled);
+                    Toast.makeText(getContext(), "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
+                });
             }
-        });
+        }).start();
     }
+
 
     private void observeFavoriteState() {
         detailViewModel.observeFavorite(mealId)

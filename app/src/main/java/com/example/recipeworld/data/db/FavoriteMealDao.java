@@ -25,8 +25,8 @@ public interface FavoriteMealDao {
     @Query("SELECT * FROM favorite_meals WHERE userId = :userId")
     LiveData<List<FavoriteMeal>> getAllFavoritesByUser(int userId);
 
-    @Query("SELECT * FROM favorite_meals WHERE userId = :userId AND idMeal = :id LIMIT 1")
-    LiveData<FavoriteMeal> getFavoriteById(String id, int userId);
+    @Query("SELECT * FROM favorite_meals WHERE userId = :userId AND idMeal = :mealId LIMIT 1")
+    LiveData<FavoriteMeal> getFavoriteById(int userId, String mealId);
 
     @Query("SELECT * FROM favorite_meals WHERE userId = :userId AND idMeal = :mealId LIMIT 1")
     LiveData<FavoriteMeal> observeFavorite(int userId, String mealId);

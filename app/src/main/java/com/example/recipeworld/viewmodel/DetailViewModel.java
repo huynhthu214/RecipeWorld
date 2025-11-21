@@ -52,10 +52,14 @@ public class DetailViewModel extends AndroidViewModel {
         return favoriteDao.observeFavorite(userId, mealId);
     }
 
+    public FavoriteMeal checkFavorite(int userId, String mealId) {
+        return favoriteDao.checkFavorite(userId, mealId);
+    }
+
     /** Kiểm tra xem món ăn đã yêu thích hay chưa */
     public LiveData<FavoriteMeal> getFavoriteById(String mealId) {
         int userId = new SessionManager(getApplication()).getLoggedInUserId();
-        return favoriteDao.getFavoriteById(mealId, userId);
+        return favoriteDao.getFavoriteById(userId, mealId);
     }
 
     /** Toggle món ăn yêu thích */

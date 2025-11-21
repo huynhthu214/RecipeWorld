@@ -47,7 +47,7 @@ public class MealRepository {
     // Lấy favorite theo mealId và userId
     public LiveData<FavoriteMeal> getFavoriteById(String id) {
         int userId = session.getLoggedInUserId();
-        return favoriteDao.getFavoriteById(id, userId);
+        return favoriteDao.getFavoriteById(userId, id);
     }
 
     public void insertFavorite(FavoriteMeal meal) {

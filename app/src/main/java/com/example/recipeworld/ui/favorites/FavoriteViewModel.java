@@ -1,4 +1,4 @@
-package com.example.recipeworld.viewmodel;
+package com.example.recipeworld.ui.favorites;
 
 import android.app.Application;
 
@@ -25,6 +25,7 @@ public class FavoriteViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<FavoriteMeal>> getAllFavorites() {
+        int userId = new SessionManager(getApplication()).getLoggedInUserId();
         return favoriteDao.getAllFavoritesByUser(userId);
     }
 

@@ -6,6 +6,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,8 +17,11 @@ import android.view.ViewGroup;
 
 import com.example.recipeworld.R;
 import com.example.recipeworld.data.db.FavoriteMeal;
+import com.example.recipeworld.data.db.SessionManager;
 import com.example.recipeworld.ui.detail.MealDetailFragment;
-import com.example.recipeworld.viewmodel.FavoriteViewModel;
+import com.example.recipeworld.ui.favorites.FavoriteViewModel;
+
+import java.util.List;
 
 public class FavoriteFragment extends Fragment {
 

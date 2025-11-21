@@ -64,12 +64,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Load user trong background thread
         new Thread(() -> {
-            User currentUser = AppDatabase.getInstance(this).userDao().getCurrentUser();
+            int userId = session.getLoggedInUserId();
+            User currentUser = AppDatabase.getInstance(this).userDao().getUserById(userId);
             if (currentUser != null) {
                 runOnUiThread(() -> {
                     userEmailTv.setText(currentUser.email);
-
-                    // Avatar chữ cái đầu
                     TextView avatarTv = new TextView(this);
                     avatarTv.setText(currentUser.email.substring(0, 1).toUpperCase());
                     avatarTv.setTextColor(Color.WHITE);

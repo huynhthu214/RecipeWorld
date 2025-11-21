@@ -44,17 +44,18 @@ public class ChangePasswordActivity extends AppCompatActivity {
         backBtn.setOnClickListener(v -> finish());
         // Load user trong background thread
         new Thread(() -> {
-            currentUser = AppDatabase.getInstance(this).userDao().getCurrentUser();
+            int userId = session.getLoggedInUserId();
+            User currentUser = AppDatabase.getInstance(this).userDao().getUserById(userId);
             if (currentUser != null) {
                 runOnUiThread(() -> {
                     userNameTv.setText(currentUser.email);
-
                     TextView avatarTv = new TextView(this);
                     avatarTv.setText(currentUser.email.substring(0, 1).toUpperCase());
                     avatarTv.setTextColor(Color.WHITE);
                     avatarTv.setTextSize(36f);
                     avatarTv.setGravity(Gravity.CENTER);
                     avatarTv.setBackgroundResource(R.drawable.circle_bg_purple);
+
                     profileImageCard.removeAllViews();
                     profileImageCard.addView(avatarTv);
                 });
