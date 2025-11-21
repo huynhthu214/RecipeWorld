@@ -5,6 +5,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.recipeworld.data.model.User;
+
 @Dao
 public interface UserDao {
 

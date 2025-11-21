@@ -14,8 +14,7 @@ import androidx.cardview.widget.CardView;
 import com.example.recipeworld.R;
 import com.example.recipeworld.data.db.AppDatabase;
 import com.example.recipeworld.data.db.SessionManager;
-import com.example.recipeworld.data.db.User;
-import com.example.recipeworld.ui.favorites.FavoriteFragment;
+import com.example.recipeworld.data.model.User;
 
 public class ProfileActivity extends AppCompatActivity {
 
