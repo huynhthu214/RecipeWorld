@@ -1,4 +1,4 @@
-package com.example.recipeworld.ui.favorites;
+package com.example.recipeworld.viewmodel;
 
 import android.app.Application;
 
@@ -9,36 +9,27 @@ import androidx.lifecycle.LiveData;
 import com.example.recipeworld.data.db.FavoriteMeal;
 import com.example.recipeworld.data.db.FavoriteMealDao;
 import com.example.recipeworld.data.db.MealDatabase;
+import com.example.recipeworld.data.db.SessionManager;
 
 import java.util.List;
 
 public class FavoriteViewModel extends AndroidViewModel {
 
-    private final FavoriteMealDao mealDao;
+    private final FavoriteMealDao favoriteDao;
+    private final int userId;
 
     public FavoriteViewModel(@NonNull Application application) {
         super(application);
-        mealDao = MealDatabase.getInstance(application).mealDao();
-    }
-
-    public void insertFavorite(FavoriteMeal meal) {
-        new Thread(() -> mealDao.insertFavorite(meal)).start();
-    }
-
-    public void deleteFavorite(FavoriteMeal meal) {
-        new Thread(() -> mealDao.deleteFavorite(meal)).start();
+        favoriteDao = MealDatabase.getInstance(application).mealDao();
+        userId = new SessionManager(application).getLoggedInUserId();
     }
 
     public LiveData<List<FavoriteMeal>> getAllFavorites() {
-        return mealDao.getAllFavorites();
+        return favoriteDao.getAllFavoritesByUser(userId);
     }
 
-    public LiveData<FavoriteMeal> getFavoriteById(String idMeal) {
-        return mealDao.getFavoriteById(idMeal);
+    public void deleteFavorite(FavoriteMeal meal) {
+        if (meal == null) return;
+        new Thread(() -> favoriteDao.deleteFavorite(meal)).start();
     }
-
-    public FavoriteMeal getFavoriteSync(String id) {
-        return mealDao.getFavoriteSync(id);
-    }
-
 }

@@ -8,7 +8,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import java.util.List;
-
 @Dao
 public interface FavoriteMealDao {
 
@@ -18,17 +17,22 @@ public interface FavoriteMealDao {
     @Delete
     void deleteFavorite(FavoriteMeal meal);
 
-    @Query("SELECT * FROM favorite_meals WHERE idMeal = :id LIMIT 1")
-    LiveData<FavoriteMeal> getFavoriteById(String id);
+    @Query("SELECT * FROM favorite_meals WHERE userId = :userId")
+    LiveData<List<FavoriteMeal>> getFavoritesForUser(int userId);
 
-    @Query("SELECT * FROM favorite_meals WHERE idMeal = :id LIMIT 1")
-    LiveData<FavoriteMeal> getFavoriteByIdLive(String id);
+    @Query("SELECT * FROM favorite_meals WHERE userId = :userId AND idMeal = :mealId LIMIT 1")
+    FavoriteMeal getFavoriteByMealId(int userId, String mealId);
+    @Query("SELECT * FROM favorite_meals WHERE userId = :userId")
+    LiveData<List<FavoriteMeal>> getAllFavoritesByUser(int userId);
 
-    @Query("SELECT * FROM favorite_meals ORDER BY uid DESC")
-    LiveData<List<FavoriteMeal>> getAllFavorites();
+    @Query("SELECT * FROM favorite_meals WHERE userId = :userId AND idMeal = :id LIMIT 1")
+    LiveData<FavoriteMeal> getFavoriteById(String id, int userId);
 
-    @Query("SELECT * FROM favorite_meals WHERE idMeal = :id LIMIT 1")
-    FavoriteMeal getFavoriteSync(String id);
+    @Query("SELECT * FROM favorite_meals WHERE userId = :userId AND idMeal = :mealId LIMIT 1")
+    LiveData<FavoriteMeal> observeFavorite(int userId, String mealId);
 
+    @Query("SELECT * FROM favorite_meals WHERE userId = :userId AND idMeal = :mealId LIMIT 1")
+    FavoriteMeal checkFavorite(int userId, String mealId);
 }
+
 

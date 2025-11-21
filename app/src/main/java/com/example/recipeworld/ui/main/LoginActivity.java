@@ -31,7 +31,9 @@ public class LoginActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextPassword);
         buttonLogin = findViewById(R.id.buttonLogin);
         ImageButton backButton = findViewById(R.id.backButton);
+
         backButton.setOnClickListener(v -> finish());
+
         buttonLogin.setOnClickListener(v -> {
             String email = editTextEmail.getText().toString().trim();
             String password = editTextPassword.getText().toString().trim();
@@ -41,20 +43,34 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            new Thread(() -> {
-                AppDatabase db = AppDatabase.getInstance(this);
-                db.userDao().clearUsers();
-                User user = new User(email, password);
-                db.userDao().insertUser(user);
+            new Thread(() -> loginUser(email, password)).start();
+        });
+    }
 
-                session.setLoggedIn(true);
+    private void loginUser(String email, String password) {
+        AppDatabase db = AppDatabase.getInstance(this);
+        User user = db.userDao().getUserByEmail(email);
 
-                runOnUiThread(() -> {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                });
-            }).start();
+        if (user == null) {
+            // User chưa có → tạo mới
+            user = new User(email, password);
+            long id = db.userDao().insertUser(user);
+            user.id = (int) id;
+        } else {
+            // User tồn tại → kiểm tra mật khẩu
+            if (!user.password.equals(password)) {
+                runOnUiThread(() -> Toast.makeText(this, "Sai mật khẩu", Toast.LENGTH_SHORT).show());
+                return;
+            }
+        }
+
+        // Lưu trạng thái đăng nhập
+        session.setLoggedIn(true, user.id);
+
+        runOnUiThread(() -> {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         });
     }
 }

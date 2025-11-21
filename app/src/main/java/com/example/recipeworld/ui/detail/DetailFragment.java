@@ -20,13 +20,16 @@ public class DetailFragment extends AndroidViewModel {
         repository = new MealRepository(application.getApplicationContext());
     }
 
-    public void addFavorite(Meal meal) {
+    public void addFavorite(Meal meal, int userId) {
+        if (userId == -1) return;
+
         FavoriteMeal fav = new FavoriteMeal(
                 meal.getIdMeal(),
                 meal.getStrMeal(),
                 meal.getThumbnail(),
                 meal.getYoutubeLink(),
-                meal.getInstructions()
+                meal.getInstructions(),
+                userId
         );
         repository.insertFavorite(fav);
     }

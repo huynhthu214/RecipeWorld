@@ -6,50 +6,86 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.recipeworld.data.db.FavoriteMeal;
+import com.example.recipeworld.data.db.FavoriteMealDao;
+import com.example.recipeworld.data.db.MealDatabase;
+import com.example.recipeworld.data.db.SessionManager;
 import com.example.recipeworld.data.model.Meal;
 import com.example.recipeworld.data.repository.MealRepository;
-import com.example.recipeworld.data.db.FavoriteMeal;
+
 import androidx.lifecycle.MediatorLiveData;
 import java.util.List;
 
 public class DetailViewModel extends AndroidViewModel {
-    private final MealRepository repo;
-    private MediatorLiveData<Meal> mealLiveData = new MediatorLiveData<>();
+
+    private final MealRepository repository;
+    private final FavoriteMealDao favoriteDao;
+    private final MediatorLiveData<Meal> mealLiveData = new MediatorLiveData<>();
 
     public DetailViewModel(@NonNull Application application) {
         super(application);
-        repo = new MealRepository(application.getApplicationContext());
+        repository = new MealRepository(application.getApplicationContext());
+        favoriteDao = MealDatabase.getInstance(application).mealDao();
     }
 
-    public LiveData<Meal> getMeal() { return mealLiveData; }
+    /** LiveData món ăn chi tiết */
+    public LiveData<Meal> getMeal() {
+        return mealLiveData;
+    }
 
+    /** Load chi tiết món ăn từ API hoặc DB */
     public void loadDetail(String idMeal) {
-        LiveData<List<Meal>> source = repo.getMealDetail(idMeal);
-
+        LiveData<List<Meal>> source = repository.getMealDetail(idMeal);
         mealLiveData.addSource(source, list -> {
-            if (list != null && !list.isEmpty())
+            if (list != null && !list.isEmpty()) {
                 mealLiveData.setValue(list.get(0));
-            else
+            } else {
                 mealLiveData.setValue(null);
-
+            }
             mealLiveData.removeSource(source);
         });
     }
 
-    public void saveFavorite(Meal m) {
-        FavoriteMeal f = new FavoriteMeal(m.getIdMeal(), m.getStrMeal(), m.getThumbnail(), m.getYoutubeLink(), m.getInstructions());
-        repo.insertFavorite(f);
+    /** Quan sát trạng thái yêu thích của món ăn */
+    public LiveData<FavoriteMeal> observeFavorite(String mealId) {
+        int userId = new SessionManager(getApplication()).getLoggedInUserId();
+        return favoriteDao.observeFavorite(userId, mealId);
     }
 
+    /** Kiểm tra xem món ăn đã yêu thích hay chưa */
+    public LiveData<FavoriteMeal> getFavoriteById(String mealId) {
+        int userId = new SessionManager(getApplication()).getLoggedInUserId();
+        return favoriteDao.getFavoriteById(mealId, userId);
+    }
+
+    /** Toggle món ăn yêu thích */
+    public void toggleFavorite(Meal m) {
+        int userId = new SessionManager(getApplication()).getLoggedInUserId();
+        if (userId == -1 || m == null || m.getIdMeal() == null) return;
+
+        new Thread(() -> {
+            FavoriteMeal exist = favoriteDao.checkFavorite(userId, m.getIdMeal());
+            if (exist != null) {
+                // Xóa món khỏi favorite
+                favoriteDao.deleteFavorite(exist);
+            } else {
+                // Thêm món vào favorite
+                FavoriteMeal fav = new FavoriteMeal(
+                        m.getIdMeal(),
+                        m.getStrMeal(),
+                        m.getThumbnail(),
+                        m.getStrYoutube(),
+                        m.getInstructions(),
+                        userId
+                );
+                favoriteDao.insertFavorite(fav);
+            }
+        }).start();
+    }
+
+    /** Xóa món yêu thích trực tiếp */
     public void deleteFavorite(FavoriteMeal fav) {
-        repo.deleteFavorite(fav);
-    }
-
-    public LiveData<java.util.List<com.example.recipeworld.data.db.FavoriteMeal>> getAllFavorites() {
-        return repo.getAllFavorites();
-    }
-
-    public void addFavorite(Meal m) {
-        saveFavorite(m);
+        if (fav == null) return;
+        new Thread(() -> favoriteDao.deleteFavorite(fav)).start();
     }
 }

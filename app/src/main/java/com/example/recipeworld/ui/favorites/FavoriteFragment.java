@@ -17,12 +17,13 @@ import android.view.ViewGroup;
 import com.example.recipeworld.R;
 import com.example.recipeworld.data.db.FavoriteMeal;
 import com.example.recipeworld.ui.detail.MealDetailFragment;
+import com.example.recipeworld.viewmodel.FavoriteViewModel;
 
 public class FavoriteFragment extends Fragment {
 
-    private FavoriteViewModel favoriteViewModel;
     private RecyclerView rvFavorites;
     private FavoriteAdapter adapter;
+    private FavoriteViewModel viewModel;
 
     public FavoriteFragment() { }
 
@@ -35,8 +36,6 @@ public class FavoriteFragment extends Fragment {
 
         rvFavorites = view.findViewById(R.id.rvFavorites);
         rvFavorites.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
-        favoriteViewModel = new ViewModelProvider(this).get(FavoriteViewModel.class);
 
         adapter = new FavoriteAdapter();
         rvFavorites.setAdapter(adapter);
@@ -53,22 +52,27 @@ public class FavoriteFragment extends Fragment {
 
             @Override
             public void onUnfavoriteClick(FavoriteMeal meal) {
-                favoriteViewModel.deleteFavorite(meal);
+                viewModel.deleteFavorite(meal);
                 Toast.makeText(getContext(), "Đã xóa khỏi yêu thích", Toast.LENGTH_SHORT).show();
             }
         });
 
-        observeFavorites();
-
         return view;
     }
 
-    private void observeFavorites() {
-        favoriteViewModel.getAllFavorites().observe(getViewLifecycleOwner(), favoriteMeals -> {
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        viewModel = new ViewModelProvider(this).get(FavoriteViewModel.class);
+
+        viewModel.getAllFavorites().observe(getViewLifecycleOwner(), favoriteMeals -> {
             adapter.setFavoriteMeals(favoriteMeals);
+            adapter.notifyDataSetChanged(); // bắt buộc để RecyclerView refresh
             if (favoriteMeals.isEmpty()) {
                 Toast.makeText(getContext(), "Danh sách yêu thích trống", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 }

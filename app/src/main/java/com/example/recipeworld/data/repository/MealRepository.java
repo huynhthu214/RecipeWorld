@@ -1,16 +1,18 @@
 package com.example.recipeworld.data.repository;
 
 import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.recipeworld.data.api.MealApiService;
+import com.example.recipeworld.data.api.MealResponse;
+import com.example.recipeworld.data.api.RetrofitClient;
 import com.example.recipeworld.data.db.FavoriteMeal;
 import com.example.recipeworld.data.db.FavoriteMealDao;
 import com.example.recipeworld.data.db.MealDatabase;
+import com.example.recipeworld.data.db.SessionManager;
 import com.example.recipeworld.data.model.Meal;
-import com.example.recipeworld.data.api.MealResponse;
-import com.example.recipeworld.data.api.MealApiService;
-import com.example.recipeworld.data.api.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +27,39 @@ public class MealRepository {
 
     private final MealApiService api;
     private final FavoriteMealDao favoriteDao;
+    private final SessionManager session;
     private final Executor executor = Executors.newSingleThreadExecutor();
 
     public MealRepository(Context context) {
         api = RetrofitClient.getMealApiService();
         favoriteDao = MealDatabase.getInstance(context).mealDao();
+        session = new SessionManager(context);
     }
 
-    //  API
+    // ================= ROOM =================
+
+    // Lấy tất cả favorite của user đang đăng nhập
+    public LiveData<List<FavoriteMeal>> getAllFavorites() {
+        int userId = session.getLoggedInUserId();
+        return favoriteDao.getFavoritesForUser(userId);
+    }
+
+    // Lấy favorite theo mealId và userId
+    public LiveData<FavoriteMeal> getFavoriteById(String id) {
+        int userId = session.getLoggedInUserId();
+        return favoriteDao.getFavoriteById(id, userId);
+    }
+
+    public void insertFavorite(FavoriteMeal meal) {
+        meal.setUserId(session.getLoggedInUserId()); // đảm bảo lưu userId
+        executor.execute(() -> favoriteDao.insertFavorite(meal));
+    }
+
+    public void deleteFavorite(FavoriteMeal meal) {
+        executor.execute(() -> favoriteDao.deleteFavorite(meal));
+    }
+
+    // ================= API =================
 
     public LiveData<List<Meal>> getMealsByIngredient(String ingredient) {
         MutableLiveData<List<Meal>> result = new MutableLiveData<>();
@@ -43,12 +70,12 @@ public class MealRepository {
                 if (response.isSuccessful() && response.body() != null)
                     result.setValue(response.body().getMeals());
                 else
-                    result.setValue(null);
+                    result.setValue(new ArrayList<>());
             }
 
             @Override
             public void onFailure(Call<MealResponse> call, Throwable t) {
-                result.setValue(null);
+                result.setValue(new ArrayList<>());
             }
         });
 
@@ -64,34 +91,16 @@ public class MealRepository {
                 if (response.isSuccessful() && response.body() != null)
                     result.setValue(response.body().getMeals());
                 else
-                    result.setValue(null);
+                    result.setValue(new ArrayList<>());
             }
 
             @Override
             public void onFailure(Call<MealResponse> call, Throwable t) {
-                result.setValue(null);
+                result.setValue(new ArrayList<>());
             }
         });
 
         return result;
-    }
-
-    //  ROOM
-
-    public LiveData<List<FavoriteMeal>> getAllFavorites() {
-        return favoriteDao.getAllFavorites();
-    }
-
-    public void insertFavorite(FavoriteMeal meal) {
-        executor.execute(() -> favoriteDao.insertFavorite(meal));
-    }
-
-    public void deleteFavorite(FavoriteMeal meal) {
-        executor.execute(() -> favoriteDao.deleteFavorite(meal));
-    }
-
-    public LiveData<FavoriteMeal> getFavoriteById(String id) {
-        return favoriteDao.getFavoriteById(id);
     }
 
     public LiveData<List<Meal>> getMealsByCategory(String category) {
@@ -115,5 +124,4 @@ public class MealRepository {
 
         return mealsLiveData;
     }
-
 }
