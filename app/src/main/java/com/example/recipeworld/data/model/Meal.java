@@ -102,10 +102,11 @@ public class Meal {
     public void setStrYoutube(String youtube) { this.youtubeLink = youtube; }
     public void setStrInstructions(String instructions) { this.instructions = instructions;}
 
-        public String getStrMeal() {
+    public String getStrMeal() {
         return name;
     }
-
+    public void setThumbnail(String thumbnail) { this.thumbnail = thumbnail; }
+    public void setInstructions(String instructions) { this.instructions = instructions; }
     public String getStrYoutube() {
         return youtubeLink;
     }

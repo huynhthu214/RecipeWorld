@@ -1,5 +1,8 @@
 package com.example.recipeworld.ui.detail;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -92,15 +95,48 @@ public class MealDetailFragment extends Fragment {
         }
     }
 
-    private void loadMealDetail(String mealId) {
-        detailViewModel.loadDetail(mealId);
-        detailViewModel.getMeal().observe(getViewLifecycleOwner(), meal -> {
-            if (meal != null) {
-                currentMeal = meal;
-                displayMeal(meal);
-            }
-        });
+    public boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo ni = cm.getActiveNetworkInfo();
+            return ni != null && ni.isConnected();
+        }
+        return false;
     }
+
+
+    private void loadMealDetail(String mealId) {
+        int userId = new SessionManager(requireContext()).getLoggedInUserId();
+
+        if (isOnline(requireContext())) {
+            // Online → load từ API
+            detailViewModel.loadDetail(mealId);
+            detailViewModel.getMeal().observe(getViewLifecycleOwner(), meal -> {
+                if (meal != null) {
+                    currentMeal = meal;
+                    displayMeal(meal);
+                }
+            });
+        } else {
+            // Offline → load từ favorite
+            detailViewModel.getMealOffline(mealId).observe(getViewLifecycleOwner(), favoriteMeal -> {
+                if (favoriteMeal != null) {
+                    currentMeal = new Meal();
+                    currentMeal.setIdMeal(favoriteMeal.getIdMeal());
+                    currentMeal.setStrMeal(favoriteMeal.getStrMeal());
+                    currentMeal.setThumbnail(favoriteMeal.getThumbnail());
+                    currentMeal.setInstructions(favoriteMeal.getInstructions());
+                    currentMeal.setStrYoutube(favoriteMeal.getYoutubeLink());
+
+                    displayMeal(currentMeal);
+                } else {
+                    Toast.makeText(requireContext(), "Không có dữ liệu offline", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+
 
     private void displayMeal(Meal meal) {
         tvMealName.setText(meal.getStrMeal());

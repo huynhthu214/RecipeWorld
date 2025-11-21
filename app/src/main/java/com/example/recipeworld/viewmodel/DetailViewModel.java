@@ -92,4 +92,9 @@ public class DetailViewModel extends AndroidViewModel {
         if (fav == null) return;
         new Thread(() -> favoriteDao.deleteFavorite(fav)).start();
     }
+    public LiveData<FavoriteMeal> getMealOffline(String mealId) {
+        int userId = new SessionManager(getApplication()).getLoggedInUserId();
+        return favoriteDao.getFavoriteById(userId, mealId);
+    }
+
 }
